@@ -1,19 +1,48 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import getOneArtist from "@/pages/api/getOneArtist";
 
 const ArtistPage = (props) => {
-    console.log("Artist page props: ", props)
+  const [isPending, setIsPending] = useState(true);
+  const [artistName, setArtistName] = useState(null);
+  const [followers, setFollowers] = useState(null);
+  const [genres, setGenres] = useState([]);
+  const [images, setImages] = useState([]);
+  const [popularity, setPopularity] = useState(null);
+  const [error, setError] = useState(null);
   const url = `https://api.spotify.com/v1/artists/${props.id}`;
-  const fetchData = async () => {
-    const data = await getOneArtist(url, props.token)
-    console.log("Data: ", data)
-  }
-  fetchData()
-    
-  
+  useEffect(() => {
+    async function fetchData() {
+        return await getOneArtist(url, props.token);
+    }
+    fetchData().then((data) => {
+      console.log("Data: ", data);
+      setArtistName(data.name);
+      setFollowers(data.followers.total);
+      setGenres(data.genres);
+      setImages(data.images);
+      setPopularity(data.popularity)
+      setIsPending(false);
+    });
+  }, []);
+
+  const renderGenres = () => {
+    return genres.map((genre, index) => {
+      return <li key={index}>{genre}</li>;
+    });
+  };
+
   return (
     <>
-      <div>{props.id}</div>
+      {!isPending && (
+        <>
+          <h1>{artistName}</h1>
+          <img src={images[0].url} alt="" />
+          <ul>{renderGenres()}</ul>
+          <p>{`${followers} followers`}</p>
+          <p>Popularity rating: {popularity}</p>
+        </>
+      )}
+      {isPending && <h1>Loading</h1>}
     </>
   );
 };

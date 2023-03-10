@@ -1,6 +1,9 @@
 import axios from "axios";
+import getAccessToken from "./getAccessToken";
 
-const getOneArtist = async (url, token) => {
+const getOneArtist = async (url) => {
+  let token = await getAccessToken()
+  token = token.data.access_token
     try {
         const { data } = await axios.get(url, {
           headers: {
@@ -10,6 +13,7 @@ const getOneArtist = async (url, token) => {
             type: 'artist'
           }
         });
+        console.log("Artist data: ", data)
         return data;
       } catch (error) {
         return error;

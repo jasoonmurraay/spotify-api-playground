@@ -3,28 +3,24 @@ import "bootstrap/dist/css/bootstrap.css";
 import axios from "axios";
 import Navbar from "@/components/Navbar";
 import ArtistSearch from "@/components/ArtistSearch";
+import getAccessToken from "../api/getAccessToken";
+
 
 const artists = () => {
   const [token, setToken] = useState("");
-  const [loggedIn, setIsLoggedIn] = useState(true)
+  const [loggedIn, setIsLoggedIn] = useState(token.length ? true: false)
+  
   useEffect(() => {
-    const hash = window.location.hash;
-    console.log("hash: ", hash);
-    let token = window.localStorage.getItem("token");
-    console.log("Token; ", token);
-    if (!token && hash) {
-      token = hash
-        .substring(1)
-        .split("&")
-        .find((elem) => elem.startsWith("access_token"))
-        .split("=")[1];
-      window.location.hash = "";
-      window.localStorage.setItem("token", token);
+    async function retrieveToken() {
+      return await getAccessToken()
     }
-    setToken(token);
-    
-  }, []);
-
+    retrieveToken().then((response) => {
+      console.log("Access token: ", response)
+      setToken(response.data.access_token)
+    })
+    console.log("Token: ", token)
+    console.log("Logged In: ", loggedIn)
+  }, [])
  
   return (
     <>

@@ -7,7 +7,7 @@ import classes from './ArtistSearch.module.css'
 import Link from "next/link";
 
 const ArtistSearch = (props) => {
-  const token = props.token;
+  // const token = props.token;
   const [artists, setArtists] = useState([]);
   const [searchKey, setSearchKey] = useState("");
   const [offset, setOffset] = useState();
@@ -21,7 +21,7 @@ const ArtistSearch = (props) => {
     if (e) {
       e.preventDefault();
     }
-    const data = await getArtists(searchUrl, searchKey, token);
+    const data = await getArtists(searchUrl, searchKey);
     console.log("Return: ", data);
     if (data.message) {
       setError(data);

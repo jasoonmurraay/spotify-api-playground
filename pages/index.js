@@ -1,36 +1,34 @@
 import Head from "next/head";
 import "bootstrap/dist/css/bootstrap.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import login from "./api/login";
 import dotenv from "dotenv";
+import getAccessToken from "./api/getAccessToken";
+import AppContext from "@/context/loggedIn";
 
 dotenv.config();
 
 export default function Home() {
+  const context = useContext(AppContext)
   const [token, setToken] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false)
   // const loginHandler = () => {
   //     login()
   // }
 
   useEffect(() => {
-    const hash = window.location.hash;
-    console.log("hash: ", hash);
-    let token = window.localStorage.getItem("token");
-    console.log("Token; ", token);
-    if (!token && hash) {
-      token = hash
-        .substring(1)
-        .split("&")
-        .find((elem) => elem.startsWith("access_token"))
-        .split("=")[1];
-      window.location.hash = "";
-      window.localStorage.setItem("token", token);
+    async function getToken() {
+      return await getAccessToken()
     }
-    setToken(token);
-  });
+    getToken().then(response => {
+      setToken(response.data.access_token)
+      setLoggedIn(true)
+    })
+    ;
+  }, []);
   const logoutHandler = (event) => {
     event.preventDefault();
     window.localStorage.removeItem("token");
@@ -48,7 +46,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Navbar isLoggedIn={token}></Navbar>
+      <Navbar isLoggedIn={loggedIn}></Navbar>
       <h1>Spotify React</h1>
       {!token ? (
         <button className="btn btn-primary">
