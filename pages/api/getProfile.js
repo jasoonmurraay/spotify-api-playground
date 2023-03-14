@@ -23,3 +23,4 @@ const getProfile = async () => {
   };
 
 export default getProfile;
+
