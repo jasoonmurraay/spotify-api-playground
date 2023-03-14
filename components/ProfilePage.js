@@ -2,6 +2,7 @@ import getProfile from "@/pages/api/getProfile";
 import { useState, useEffect } from "react";
 import ButtonComponent from "./ButtonComponent";
 import getProfileDataType from "@/pages/api/getProfileDataType";
+import getGenres from "@/pages/api/getGenres";
 
 const ProfilePage = (props) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -13,6 +14,7 @@ const ProfilePage = (props) => {
   const [fetchType, setFetchType] = useState(null);
   const [tracks, setTracks] = useState([]);
   const [artists, setArtists] = useState([]);
+  const [genres, setGenres] = useState([])
   useEffect(() => {
     setIsLoading(true);
     async function fetchData() {
@@ -30,26 +32,40 @@ const ProfilePage = (props) => {
   }, []);
 
   useEffect(() => {
-    async function getType() {
-      return await getProfileDataType(fetchType);
-    }
-    getType().then((data) => {
-      console.log("fetched data type: ", data);
-      if (fetchType === "tracks") {
-        setTracks(data.items);
-        setIsLoading(false);
-      } else {
-        setArtists(data.items);
-        setIsLoading(false);
+    if (fetchType === "genres") {
+      async function fetchGenres() {
+        return await getGenres();
       }
-    });
+      fetchGenres().then(data => {
+        console.log("Fetched data type: ", data)
+        setGenres(data.slice(0,10))
+        setIsLoading(false)
+      })
+    } else {
+      async function getType() {
+        return await getProfileDataType(fetchType);
+      }
+      getType().then((data) => {
+        console.log("fetched data type: ", data);
+        if (fetchType === "tracks") {
+          setTracks(data.items);
+          setIsLoading(false);
+        } else {
+          setArtists(data.items);
+          setIsLoading(false);
+        }
+      });
+    }
   }, [fetchType]);
   const fetchHandler = (value) => {
     if (value.includes("Tracks")) {
       setFetchType("tracks");
       setIsLoading(true);
-    } else {
+    } else if (value.includes("Artists")) {
       setFetchType("artists");
+      setIsLoading(true);
+    } else if (value.includes("Genres")) {
+      setFetchType("genres");
       setIsLoading(true);
     }
   };
@@ -88,6 +104,13 @@ const ProfilePage = (props) => {
       );
     });
   };
+  const renderGenres = () => {
+    return genres.map((genre) => {
+      return (
+        <li key={genre[0]}>{genre[0]}</li>
+      )
+    })
+  }
   return (
     <>
       {!fetchType && !isLoading && (
@@ -104,6 +127,7 @@ const ProfilePage = (props) => {
           </div>
           <ButtonComponent onClick={fetchHandler} text="Get top Tracks" />
           <ButtonComponent onClick={fetchHandler} text="Get top Artists" />
+          <ButtonComponent onClick={fetchHandler} text="Get top Genres" />
         </>
       )}
       {fetchType === "tracks" && !isLoading && (
@@ -116,6 +140,12 @@ const ProfilePage = (props) => {
         <>
           <h1>Top Artists</h1>
           <ol>{renderArtists()}</ol>
+        </>
+      )}
+      {fetchType === 'genres' && !isLoading && (
+        <>
+        <h1>Top Genres</h1>
+        <ol>{renderGenres()}</ol>
         </>
       )}
     </>

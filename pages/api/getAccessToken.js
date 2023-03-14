@@ -5,8 +5,8 @@ const getAccessToken = async () => {
     const refresh_token = process.env.NEXT_PUBLIC_SPOTIFY_REFRESH_TOKEN;
     // console.log("Refresh token: ", refresh_token)
     // console.log("client: ", process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID)
-  
-    const response = await fetch("https://accounts.spotify.com/api/token", {
+    try {
+      const response = await fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
       headers: {
         Authorization: `Basic ${Buffer.from(
@@ -28,6 +28,11 @@ const getAccessToken = async () => {
     // console.log("Response: ", response)
   
     return response;
+    } catch (e) {
+      console.log("Access token Error: ", e)
+      return e
+    }
+    
   };
 
   export default getAccessToken
