@@ -8,7 +8,7 @@ import getAccessToken from "../api/getAccessToken";
 
 const artists = () => {
   const [token, setToken] = useState("");
-  const [loggedIn, setIsLoggedIn] = useState(token.length ? true: false)
+  const [loggedIn, setIsLoggedIn] = useState(false)
   
   useEffect(() => {
     async function retrieveToken() {
