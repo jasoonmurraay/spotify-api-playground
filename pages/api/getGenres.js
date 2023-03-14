@@ -6,7 +6,7 @@ const getGenres = async () => {
   token = token.data.access_token;
   let genres = {};
   let genreArr = [];
-  let url = `https://api.spotify.com/v1/me/top/artists`;
+  let url = `https://api.spotify.com/v1/me/top/tracks`;
   let next = true;
   console.log("Url: ", url);
   try {
@@ -22,11 +22,16 @@ const getGenres = async () => {
       });
       console.log("Profile data: ", data);
       for (let i = 0; i < data.items.length; i++) {
-        for (let k = 0; k < data.items[i].genres.length; k++) {
-          if (data.items[i].genres[k] in genres) {
-            genres[data.items[i].genres[k]] += 1;
+        const { songData } = await axios.get(`https://api.spotify.com/v1/tracks/${data.items.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        for (let k = 0; k < songData.album.genres.length; k++) {
+          if (songData.album.genres[k] in genres) {
+            genres[songData.album.genres[k]] += 1;
           } else {
-            genres[data.items[i].genres[k]] = 1;
+            genres[songData.album.genres[k]] = 1;
           }
         }
       }
