@@ -4,7 +4,7 @@ const ButtonComponent = (props) => {
         return props.onClick(e.target.value)
     }
     return (
-        <button value={props.text} onclick={onClickHandler}>{props.text}</button>
+        <button value={props.text} onClick={onClickHandler}>{props.text}</button>
     )
 }
 
