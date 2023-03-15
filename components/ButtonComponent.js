@@ -1,10 +1,12 @@
+import classes from './ButtonComponent.module.css'
+
 const ButtonComponent = (props) => {
     const onClickHandler = (e) => {
         e.preventDefault()
         return props.onClick(e.target.value)
     }
     return (
-        <button value={props.text} onClick={onClickHandler}>{props.text}</button>
+        <button className={classes.styles} value={props.text} onClick={onClickHandler}>{props.text}</button>
     )
 }
 

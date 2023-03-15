@@ -24,13 +24,17 @@ const modifyPlaylist = async (playlistId) => {
         return a[3] - b[3]
     })
     // re-order playlist to match array order
-    const reordered = await axios.put(`https://api.spotify.com/v1/playlist/${playlistId}/tracks`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-        range_start: 0,
-        range_length: length
-    })
+    for (let i = 0; i < scoreArray.length; i++) {
+        await axios.put(`https://api.spotify.com/v1/playlist/${playlistId}/tracks`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            uris: `${scoreArray[2]}`,
+            range_start: scoreArray[i][4],
+            insert_before: scoreArraySorted[i]
+        })
+    }
+
 }
 
 export default modifyPlaylist

@@ -1,5 +1,6 @@
 import getProfile from "@/pages/api/getProfile";
 import { useState, useEffect } from "react";
+import useDidMountEffect from "@/hooks/useDidMountEffect";
 import ButtonComponent from "./ButtonComponent";
 import getProfileDataType from "@/pages/api/getProfileDataType";
 import getGenres from "@/pages/api/getGenres";
@@ -31,14 +32,14 @@ const ProfilePage = (props) => {
     });
   }, []);
 
-  useEffect(() => {
+  useDidMountEffect(() => {
     if (fetchType === "genres") {
       async function fetchGenres() {
         return await getGenres();
       }
       fetchGenres().then(data => {
         console.log("Fetched data type: ", data)
-        setGenres(data.slice(0,10))
+        setGenres(data.slice(0, 10))
         setIsLoading(false)
       })
     } else {
@@ -73,34 +74,38 @@ const ProfilePage = (props) => {
   const renderTracks = () => {
     return tracks.map((track) => {
       return (
-        <li key={track.id}>
-          <img src={track.album.images[0].url} alt="" />
-          <h2>{track.name}</h2>
-          <div>
-            {track.artists.length === 1 ? "Artist: " : "Artists: "}{" "}
-            <ul>
-              {track.artists.map((artist) => {
-                return (
-                  <a key={artist.id} href={artist.external_urls.spotify}>
-                    <li>{artist.name}</li>
-                  </a>
-                );
-              })}
-            </ul>
-          </div>
-        </li>
+        <div className='card col-xl-3 col-md-4 col-12 d-flex align-items-center justify-content-center'>
+          <li key={track.id}>
+            <img className='card-img' src={track.album.images[0].url} alt="" />
+            <h2 className='card-title'>{track.name}</h2>
+            <div>
+              {track.artists.length === 1 ? "Artist: " : "Artists: "}{" "}
+              <ul>
+                {track.artists.map((artist) => {
+                  return (
+                    <a key={artist.id} href={artist.external_urls.spotify}>
+                      <li>{artist.name}</li>
+                    </a>
+                  );
+                })}
+              </ul>
+            </div>
+          </li>
+        </div>
       );
     });
   };
   const renderArtists = () => {
     return artists.map((artist) => {
       return (
-        <li key={artist.id}>
-          {/* <img src={artist.images[0].url} alt="" /> */}
-          <a href={artist.external_urls.spotify}>
-            <h2>{artist.name}</h2>
-          </a>
-        </li>
+        <div className='card col-xl-3 col-md-4 col-12 d-flex align-items-center justify-content-center'>
+          <li key={artist.id}>
+            {/* <img src={artist.images[0].url} alt="" /> */}
+            <a href={artist.external_urls.spotify}>
+              <h2 className='card-title'>{artist.name}</h2>
+            </a>
+          </li>
+        </div>
       );
     });
   };
@@ -115,19 +120,16 @@ const ProfilePage = (props) => {
     <>
       {!fetchType && !isLoading && (
         <>
-          <div>
+          <div className='card col-xl-3 col-md-4 col-12 d-flex align-items-center justify-content-center'>
             <a href={link}>
-              <h1>{displayName}</h1>
+              <h1 className='card-title'>{displayName}</h1>
             </a>
-            <img src={images[0].url} alt="" />
+            <img className='card-img' src={images[0].url} alt="" />
             <p>
               {followers} {followers === 1 ? "follower" : "followers"}
             </p>
             <p>{country}</p>
           </div>
-          <ButtonComponent onClick={fetchHandler} text="Get top Tracks" />
-          <ButtonComponent onClick={fetchHandler} text="Get top Artists" />
-          <ButtonComponent onClick={fetchHandler} text="Get top Genres" />
         </>
       )}
       {fetchType === "tracks" && !isLoading && (
@@ -144,9 +146,18 @@ const ProfilePage = (props) => {
       )}
       {fetchType === 'genres' && !isLoading && (
         <>
-        <h1>Top Genres</h1>
-        <ol>{renderGenres()}</ol>
+          <h1>Top Genres</h1>
+          <ol>{renderGenres()}</ol>
         </>
+      )}
+      {fetchType !== 'tracks' && !isLoading && (
+        <ButtonComponent onClick={fetchHandler} text="Get top Tracks" />
+      )}
+      {fetchType !== 'artists' && !isLoading && (
+        <ButtonComponent onClick={fetchHandler} text="Get top Artists" />
+      )}
+      {fetchType !== 'genres' && !isLoading && (
+        <ButtonComponent onClick={fetchHandler} text="Get top Genres" />
       )}
     </>
   );
