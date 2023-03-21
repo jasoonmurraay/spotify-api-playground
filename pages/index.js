@@ -25,6 +25,7 @@ export default function Home() {
     }
     getToken().then(response => {
       setToken(response.data.access_token)
+      console.log("token: ", response.data.access_token)
       setLoggedIn(true)
     })
     ;
