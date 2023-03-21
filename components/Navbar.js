@@ -2,9 +2,9 @@ import Link from "next/link";
 import { useState } from "react";
 
 const Navbar = (props) => {
-  //   const clientId = "acd3854010f7468690e7ff12c6b5a2b3";
-  // const redirectUri = "http://localhost:3000";
-  // const authEndpoint = "https://accounts.spotify.com/authorize";
+    const clientId = "acd3854010f7468690e7ff12c6b5a2b3";
+  const redirectUri = "http://localhost:3000";
+  const authEndpoint = "https://accounts.spotify.com/authorize";
   const responseType = "token";
   const [loggedIn, isLoggedIn] = useState(props.isLoggedIn);
   console.log("loggedIn: ", loggedIn)
