@@ -6,7 +6,7 @@ const ButtonComponent = (props) => {
         return props.onClick(e.target.value)
     }
     return (
-        <button className={`${classes.styles} btn btn-primary`} value={props.text} onClick={onClickHandler}>{props.text}</button>
+        <button className={`${classes.styles} btn btn-primary`} value={props.id? props.id : props.text} onClick={onClickHandler}>{props.text}</button>
     )
 }
 

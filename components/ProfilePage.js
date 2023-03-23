@@ -6,7 +6,8 @@ import getProfileDataType from "@/pages/api/getProfileDataType";
 import getGenres from "@/pages/api/getGenres";
 import Link from "next/link";
 import getUserPlaylists from "@/pages/api/getUserPlaylists";
-import classes from './ProfilePage.module.css'
+import classes from "./ProfilePage.module.css";
+import modifyPlaylist from "@/pages/api/modifyPlaylist";
 
 const ProfilePage = (props) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -90,6 +91,16 @@ const ProfilePage = (props) => {
     }
   };
 
+  const reorderHandler = (id) => {
+    const reorderPlaylist = async (id) => {
+      return await modifyPlaylist(id)
+    }
+    console.log("click!")
+    reorderPlaylist(id).then((data) => {
+      console.log("Reorder data: ", data)
+    })
+  }
+
   const renderTracks = () => {
     return tracks.map((track) => {
       return (
@@ -117,9 +128,19 @@ const ProfilePage = (props) => {
   const renderArtists = () => {
     return artists.map((artist) => {
       return (
-        <div className={`${classes.card} card col-xl-3 col-md-4 col-12 d-flex align-items-center justify-content-center`}>
+        <div
+          className={`${classes.card} card col-xl-3 col-md-4 col-12 d-flex align-items-center justify-content-center`}
+        >
           <li key={artist.id}>
-            {artist.images.length ? <img className={`${classes.img} card-img`} src={artist.images[0].url} alt="" /> : <></>}
+            {artist.images.length ? (
+              <img
+                className={`${classes.img} card-img`}
+                src={artist.images[0].url}
+                alt=""
+              />
+            ) : (
+              <></>
+            )}
             <a href={artist.external_urls.spotify}>
               <h2 className="card-title">{artist.name}</h2>
             </a>
@@ -136,13 +157,19 @@ const ProfilePage = (props) => {
   const renderPlaylists = () => {
     return playlists.items.map((playlist) => {
       return (
-        <div className={`${classes.card} card col-xl-3 col-md-4 col-12 d-flex align-items-center justify-content-center`}>
+        <div
+          className={`${classes.card} card col-xl-3 col-md-4 col-12 d-flex align-items-center justify-content-center`}
+        >
           <li key={playlist.id}>
-            <img className={`${classes.img} card-img`} src={playlist.images[0].url} alt="" />
+            <img
+              className={`${classes.img} card-img`}
+              src={playlist.images[0].url}
+              alt=""
+            />
             <a href={playlist.external_urls.spotify}>
               <h2 className="card-title">{playlist.name}</h2>
             </a>
-            
+            <ButtonComponent id={playlist.id} onClick={reorderHandler} text='Re-order playlist' />
           </li>
         </div>
       );
@@ -156,7 +183,7 @@ const ProfilePage = (props) => {
             <a href={link}>
               <h1 className="card-title">{displayName}</h1>
             </a>
-            <img className="card-img" src={images[0].url} alt="" />
+            {images.length && <img className="card-img" src={images[0].url} alt="" />}
             <p>
               {followers} {followers === 1 ? "follower" : "followers"}
             </p>
