@@ -2,9 +2,20 @@
 const nextConfig = {
   reactStrictMode: true,
   webpack: (config) => {
-    config.resolve.fallback = {fs: false}
+    config.resolve.fallback = { fs: false }
     return config
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'https://api.spotify.com/v1/playlists'
+      }
+    ]
   }
 }
+
+
+
 
 module.exports = nextConfig

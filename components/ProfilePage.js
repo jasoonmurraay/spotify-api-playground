@@ -93,9 +93,8 @@ const ProfilePage = (props) => {
 
   const reorderHandler = (id) => {
     const reorderPlaylist = async (id) => {
-      return await modifyPlaylist(id)
+      return await props.modify(id)
     }
-    console.log("click!")
     reorderPlaylist(id).then((data) => {
       console.log("Reorder data: ", data)
     })

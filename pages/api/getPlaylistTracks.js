@@ -2,7 +2,7 @@ import axios from "axios";
 import getAccessToken from "./getAccessToken";
 
 const getPlaylistTracks = async (id) => {
-    console.log("Fetching playlist tracks!")
+  console.log("Fetching playlist tracks!")
   let token = await getAccessToken();
   token = token.data.access_token;
   console.log("Got token! ", token)
@@ -19,10 +19,11 @@ const getPlaylistTracks = async (id) => {
           },
         }
       );
-      console.log("Got tracks!", data.next)
-      for (let i = 0; i<data.items.length; i++) {
+      console.log("Got tracks!")
+      for (let i = 0; i < data.items.length; i++) {
         tracks.push(data.items[i])
       }
+      console.log("Next: ", data)
       if (!data.next) {
         next = false;
       } else {

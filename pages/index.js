@@ -28,7 +28,7 @@ export default function Home() {
       console.log("token: ", response.data.access_token)
       setLoggedIn(true)
     })
-    ;
+      ;
   }, []);
   const logoutHandler = (event) => {
     event.preventDefault();
