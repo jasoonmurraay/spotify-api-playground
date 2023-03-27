@@ -1,11 +1,13 @@
 import getAccessToken from "./getAccessToken"
 import axios from 'axios'
+import createPlaylist from "./createPlaylist"
+import addToPlaylist from "./addToPlaylist"
 
 const createRecPlaylist = async (enteredData) => {
     let token = await getAccessToken()
     token = token.data.access_token
     try {
-        const { playlist } = await axios.get('https://api.spotify.com/v1/recommendations', {
+        const { recTracks } = await axios.get('https://api.spotify.com/v1/recommendations', {
             query: {
                 seed_artists: enteredData.artists,
                 seed_genres: enteredData.genres,
@@ -24,7 +26,17 @@ const createRecPlaylist = async (enteredData) => {
                 target_valence: enteredData.valence,
             }
         })
-        return playlist
+        let trackUris = ''
+        for (let i = 0; i < recTracks.tracks.length; i++) {
+            if (i === 0) {
+                trackUris = recTracks.tracks[i].uri
+            } else {
+                trackUris = trackUris + ',' + recTracks.tracks[i].uri
+            }
+        }
+        const { newPlaylist } = await createPlaylist(userId)
+        const { addedNewSongs } = await addToPlaylist(newPlaylist.id, trackUris)
+        return
     } catch (e) {
         return e
     }

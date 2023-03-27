@@ -8,6 +8,7 @@ import Link from "next/link";
 import getUserPlaylists from "@/pages/api/getUserPlaylists";
 import classes from "./ProfilePage.module.css";
 import modifyPlaylist from "@/pages/api/modifyPlaylist";
+import getSeveralArtistsTopTracks from "@/pages/api/getSeveralArtistsTopTracks";
 
 const ProfilePage = (props) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -56,7 +57,7 @@ const ProfilePage = (props) => {
       }
       fetchGenres().then((data) => {
         console.log("Fetched data type: ", data);
-        setGenres(data.slice(0, 10));
+        // setGenres(data.slice(0, 10));
         setIsLoading(false);
       });
     } else {
@@ -143,6 +144,7 @@ const ProfilePage = (props) => {
             <a href={artist.external_urls.spotify}>
               <h2 className="card-title">{artist.name}</h2>
             </a>
+
           </li>
         </div>
       );
@@ -174,6 +176,10 @@ const ProfilePage = (props) => {
       );
     });
   };
+  const generatePlaylist = async (e) => {
+    e.preventDefault()
+    await getSeveralArtistsTopTracks(artists, country, userId)
+  }
   return (
     <>
       {!fetchType && !isLoading && (
@@ -199,6 +205,7 @@ const ProfilePage = (props) => {
       {fetchType === "artists" && !isLoading && (
         <>
           <h1>Top Artists</h1>
+          <button type='button' onClick={generatePlaylist} className="btn btn-primary">Generate Playlist</button>
           <ol>{renderArtists()}</ol>
         </>
       )}
