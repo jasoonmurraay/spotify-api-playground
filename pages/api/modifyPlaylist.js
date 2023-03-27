@@ -1,6 +1,4 @@
 import axios from 'axios'
-import { resolve } from 'styled-jsx/css'
-import corsHandler from './corsMiddleware'
 import getAccessToken from './getAccessToken'
 import getPlaylist from './getPlaylist'
 import getPlaylistTracks from './getPlaylistTracks'
@@ -26,7 +24,7 @@ const modifyPlaylist = async (playlistId) => {
             }
         }
         const trackUrl = `https://api.spotify.com/v1/audio-features`
-        let score = 0
+
         await axios.get(trackUrl, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -40,17 +38,19 @@ const modifyPlaylist = async (playlistId) => {
             audioUpper = (audioUpper + 100 > length) ? length : audioUpper + 100
             // make a score for each track, and add uri and score to array
             for (let i = 0; i < data.data.audio_features.length; i++) {
+                let score = 0
                 let track = data.data.audio_features[i]
-                score += (track.danceability + track.energy + track.loudness + track.mode + track.tempo + track.valence)
+                score += (track.danceability + track.energy - track.loudness + track.mode + (0.05 * track.tempo) + track.valence)
                 scoreArray.push([track.id, track.uri, score, i])
             }
         })
     }
-    console.log("Score Array: ", scoreArray)
+
     // sort array of tracks by score
-    scoreArray = scoreArray.sort((a, b) => {
+    scoreArray.sort((a, b) => {
         return a[2] - b[2]
     })
+    console.log("Score Array: ", scoreArray)
     let uriArray = []
     for (let i = 0; i < scoreArray.length; i++) {
         uriArray.push(scoreArray[i][1])
@@ -80,7 +80,7 @@ const modifyPlaylist = async (playlistId) => {
         console.log("URI as string: ", uriArrayString)
         // await corsHandler()
         await axios({
-            method: 'put',
+            method: start >= 100 ? 'post' : 'put',
             url: putUrl,
             headers: {
                 'Authorization': `Bearer ${token}`,

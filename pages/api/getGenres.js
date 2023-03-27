@@ -16,62 +16,58 @@ const getGenres = async () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        q: {
-          time_range: "short_term",
+        params: {
+          time_range: "long_term",
           limit: 50,
         },
       });
       console.log("Genre data: ", data);
       for (let i = 0; i < data.items.length; i++) {
-        genreDataArr.push(data.items[i]);
+        genreDataArr = genreDataArr.concat(data.items[i].artists)
       }
-
+      let artistsIDs = ''
+      for (let i = 0; i < genreDataArr.length; i++) {
+        if (artistsIDs.includes(genreDataArr[i].id)) {
+          continue
+        } else {
+          artistsIDs = artistsIDs + (i === 0 ? '' : ',') + genreDataArr[i].id
+        }
+      }
+      console.log("artist ids: ", artistsIDs)
+      const { severalArtists } = await axios({
+        method: 'get',
+        url: 'https://api.spotify.com/v1/artists',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        params: {
+          ids: artistsIDs
+        }
+      }).then(data => {
+        console.log("Artists: ", data)
+        let artistsArr = data.data.artists
+        for (let i = 0; i < artistsArr.length; i++) {
+          for (let j = 0; j < artistsArr[i].genres.length; j++) {
+            if (artistsArr[i].genres[j] in genres) {
+              genres[artistsArr[i].genres[j]] = genres[artistsArr[i].genres[j]] + 1
+            } else {
+              genres[artistsArr[i].genres[j]] = 1
+            }
+          }
+        }
+        console.log("Genres: ", genres)
+        return genres
+      })
       if (!data.next) {
         next = false;
       } else {
         url = data.next;
       }
     }
-    console.log("GenreDataArr: ", genreDataArr);
-    let i = 0;
-    while (i < genreDataArr.length) {
-      console.log("url: ", genreDataArr[i].id);
-      await axios
-        .get(`https://api.spotify.com/v1/tracks/${genreDataArr[i].id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then(async (song) => {
-          await axios.get(`https://api.spotify.com/v1/albums/${song.data.album.id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }).then((album) => {
-            console.log("Album genre: ", album)
-            i++
-          })
-        });
-
-      // if (!song.data.album.genres) {
-      //   continue;
-      // }
-      // for (let k = 0; k < songData[i].data.album.genres.length; k++) {
-      //   if (songData[i].data.album.genres[k] in genres) {
-      //     genres[songData[i].data.album.genres[k]] += 1;
-      //   } else {
-      //     genres[songData[i].data.album.genres[k]] = 1;
-      //   }
-      // }
+    for (genre in genres) {
+      genreArr.push([Object.keys(genre), Object.values(genre)])
     }
-    for (let genreType in genres) {
-      genreArr.push([genreType, genres[genreType]]);
-    }
-    genreArr = genreArr.sort((a, b) => {
-      return b[1] - a[1];
-    });
-    console.log("GenreArr: ", genreArr);
-    return genreArr;
+    console.log("GenreArr: ", genre)
   } catch (e) {
     return e;
   }
