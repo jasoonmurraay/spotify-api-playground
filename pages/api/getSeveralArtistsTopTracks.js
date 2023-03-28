@@ -31,8 +31,7 @@ const getSeveralArtistsTopTracks = async (artists, country, userId) => {
     }
     console.log("Artists top tracks: ", artistsData)
     const { newPlaylist } = await createPlaylist(userId, "Top Artists' Top Songs").then(async (data) => {
-        const addedSongs = await addToPlaylist(data.id, uris)
-        console.log("Updated created playlist: ", addedSongs)
+        await addToPlaylist(data.id, uris)
     })
 
 }

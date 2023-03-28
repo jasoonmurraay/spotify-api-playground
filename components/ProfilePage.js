@@ -1,5 +1,5 @@
 import getProfile from "@/pages/api/getProfile";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import useDidMountEffect from "@/hooks/useDidMountEffect";
 import ButtonComponent from "./ButtonComponent";
 import getProfileDataType from "@/pages/api/getProfileDataType";
@@ -9,8 +9,12 @@ import getUserPlaylists from "@/pages/api/getUserPlaylists";
 import classes from "./ProfilePage.module.css";
 import modifyPlaylist from "@/pages/api/modifyPlaylist";
 import getSeveralArtistsTopTracks from "@/pages/api/getSeveralArtistsTopTracks";
+import { SpotifyContext } from "@/context/spotifyContext";
 
 const ProfilePage = (props) => {
+  const { token, isTokenValid } = useContext(SpotifyContext)
+  console.log("Spotify token: ", token)
+  console.log("Is token valid: ", isTokenValid)
   const [isLoading, setIsLoading] = useState(true);
   const [displayName, setDisplayName] = useState(null);
   const [images, setImages] = useState([]);
@@ -26,7 +30,7 @@ const ProfilePage = (props) => {
   useEffect(() => {
     setIsLoading(true);
     async function fetchData() {
-      return await getProfile();
+      return await getProfile(token, isTokenValid);
     }
     fetchData().then((data) => {
       console.log("Profile Items: ", data);
@@ -44,7 +48,7 @@ const ProfilePage = (props) => {
   useDidMountEffect(() => {
     if (fetchType === "playlists") {
       async function fetchPlaylists() {
-        return await getUserPlaylists(userId, true);
+        return await getUserPlaylists(userId, true, token, isTokenValid);
       }
       fetchPlaylists().then((data) => {
         setPlaylists(data);
@@ -158,10 +162,10 @@ const ProfilePage = (props) => {
   const renderPlaylists = () => {
     return playlists.items.map((playlist) => {
       return (
-        <div
-          className={`${classes.card} card col-xl-3 col-md-4 col-12 d-flex align-items-center justify-content-center`}
-        >
-          <li key={playlist.id}>
+        <li key={playlist.id}>
+          <div
+            className={`${classes.card} card col-xl-3 col-md-4 col-12 d-flex align-items-center justify-content-center`}
+          >
             <img
               className={`${classes.img} card-img`}
               src={playlist.images[0].url}
@@ -171,8 +175,8 @@ const ProfilePage = (props) => {
               <h2 className="card-title">{playlist.name}</h2>
             </a>
             <ButtonComponent id={playlist.id} onClick={reorderHandler} text='Re-order playlist' />
-          </li>
-        </div>
+          </div>
+        </li>
       );
     });
   };

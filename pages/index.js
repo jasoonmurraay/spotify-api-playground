@@ -7,12 +7,11 @@ import Navbar from "@/components/Navbar";
 import login from "./api/login";
 import dotenv from "dotenv";
 import getAccessToken from "./api/getAccessToken";
-import AppContext from "@/context/loggedIn";
+import AppContext from "@/context/spotifyContext";
 
 dotenv.config();
 
 export default function Home() {
-  const context = useContext(AppContext)
   const [token, setToken] = useState("");
   const [loggedIn, setLoggedIn] = useState(false)
   // const loginHandler = () => {
@@ -27,12 +26,13 @@ export default function Home() {
       setToken(response.data.access_token)
       console.log("token: ", response.data.access_token)
       setLoggedIn(true)
+      window.localStorage.setItem('token', response.data.access_token)
     })
-      ;
   }, []);
   const logoutHandler = (event) => {
     event.preventDefault();
     window.localStorage.removeItem("token");
+    setLoggedIn(false)
   };
 
   const clientId = process.env.SPOTIFY_CLIENT_ID;

@@ -2,9 +2,14 @@ import axios from "axios";
 import getAccessToken from "./getAccessToken";
 import getProfile from "./getProfile";
 
-const getUserPlaylists = async (userId, getUserOnly) => {
-  let token = await getAccessToken();
-  token = token.data.access_token;
+const getUserPlaylists = async (userId, getUserOnly, providedToken, isTokenValid) => {
+  let token
+  if (isTokenValid === true) {
+    token = providedToken
+  } else {
+    token = await getAccessToken();
+    token = token.data.access_token;
+  }
   const playlists = [];
   console.log("Token: ", token);
   try {
@@ -34,7 +39,7 @@ const getUserPlaylists = async (userId, getUserOnly) => {
       };
     }
     else {
-        return data
+      return data
     }
   } catch (e) {
     return e;
