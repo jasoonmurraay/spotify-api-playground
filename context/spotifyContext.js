@@ -8,9 +8,12 @@ export const SpotifyContext = createContext();
 export const SpotifyProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [expirationTime, setExpirationTime] = useState(null);
+  
+ 
 
   useEffect(() => {
     const fetchToken = async () => {
+      console.log("Fetching from context!")
       const response = await getAccessToken();
       console.log("Response in context: ", response)
       const { access_token, expires_in } = await response.data;
@@ -22,6 +25,13 @@ export const SpotifyProvider = ({ children }) => {
     fetchToken();
   }, []);
 
+  // useEffect(() => {
+  //   const expires_in = 3600
+  //   setExpirationTime(Date.now() + expires_in * 1000);
+  // }, [updateToken])
+
+  
+
   // function updateTokenData(newTokenData) {
   //   setToken(newTokenData)
   // }
@@ -29,7 +39,7 @@ export const SpotifyProvider = ({ children }) => {
   const isTokenValid = expirationTime && expirationTime > Date.now();
 
   return (
-    <SpotifyContext.Provider value={{ token, isTokenValid }}>
+    <SpotifyContext.Provider value={{ token, isTokenValid, setToken }}>
       {children}
     </SpotifyContext.Provider>
   );

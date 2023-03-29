@@ -1,5 +1,6 @@
-import { SpotifyContext, SpotifyProvider } from '@/context/spotifyContext';
-import dotenv from 'dotenv';
+import { SpotifyContext, SpotifyProvider } from "@/context/spotifyContext";
+import { useContext } from "react";
+import dotenv from "dotenv";
 // dotenv.config()
 
 const getAccessToken = async () => {
@@ -19,25 +20,21 @@ const getAccessToken = async () => {
         grant_type: "refresh_token",
         refresh_token,
       }),
-    }).then(response => (
-      response.json().then(data => ({
+    }).then((response) =>
+      response.json().then((data) => ({
         data: data,
-        status: response.status
-      })
-      )));
-    console.log("Access token response: ", response)
-
-
-
+        status: response.status,
+      }))
+    );
+    console.log("Access token response: ", response);
 
     // console.log("Response: ", response)
 
     return response;
   } catch (e) {
-    console.log("Access token Error: ", e)
-    return e
+    console.log("Access token Error: ", e);
+    return e;
   }
-
 };
 
-export default getAccessToken
+export default getAccessToken;

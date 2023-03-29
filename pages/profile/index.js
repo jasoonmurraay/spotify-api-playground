@@ -9,18 +9,6 @@ import { useRouter } from "next/router"
 
 
 const profile = () => {
-    const router = useRouter()
-    const [token, setToken] = useState(null)
-    console.log(typeof window)
-    useEffect(() => {
-        async function retrieveToken() {
-            return await getAccessToken()
-        }
-        retrieveToken().then((response) => {
-            setToken(response.data.access_token)
-            console.log(response.data.access_token)
-        })
-    }, [])
     const modifyPlaylistHandler = (playlistId) => {
         const modify = async (id) => {
             return await modifyPlaylist(id)
@@ -31,7 +19,7 @@ const profile = () => {
         // router.reload()
     }
     return (
-        <ProfilePage modify={modifyPlaylistHandler} token={token} />
+        <ProfilePage modify={modifyPlaylistHandler}  />
     )
 }
 

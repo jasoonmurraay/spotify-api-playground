@@ -1,5 +1,6 @@
 import getProfile from "@/pages/api/getProfile";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, } from "react";
+import React from "react";
 import useDidMountEffect from "@/hooks/useDidMountEffect";
 import ButtonComponent from "./ButtonComponent";
 import getProfileDataType from "@/pages/api/getProfileDataType";
@@ -11,8 +12,8 @@ import modifyPlaylist from "@/pages/api/modifyPlaylist";
 import getSeveralArtistsTopTracks from "@/pages/api/getSeveralArtistsTopTracks";
 import { SpotifyContext } from "@/context/spotifyContext";
 
-const ProfilePage = (props) => {
-  const { token, isTokenValid } = useContext(SpotifyContext)
+const ProfilePage = React.memo((props) => {
+  let {token, isTokenValid, setToken} = useContext(SpotifyContext)
   console.log("Spotify token: ", token)
   console.log("Is token valid: ", isTokenValid)
   const [isLoading, setIsLoading] = useState(true);
@@ -34,14 +35,19 @@ const ProfilePage = (props) => {
     }
     fetchData().then((data) => {
       console.log("Profile Items: ", data);
-      setDisplayName(data.display_name);
-      setImages(data.images);
-      setFollowers(data.followers.total);
-      setLink(data.href);
-      setCountry(data.country);
+      setDisplayName(data.data.display_name);
+      setImages(data.data.images);
+      setFollowers(data.data.followers.total);
+      setLink(data.data.href);
+      setCountry(data.data.country);
       setIsLoading(false);
-      setUserId(data.id);
-      console.log("ID: ", data.id);
+      setUserId(data.data.id);
+      console.log("ID: ", data.data.id);
+      if (data.token !== token) {
+        console.log("not equal: ", data.token, "\n", token)
+        setToken(data.token)
+        token = data.token
+      }
     });
   }, []);
 
@@ -242,6 +248,6 @@ const ProfilePage = (props) => {
       )}
     </>
   );
-};
+});
 
 export default ProfilePage;
