@@ -13,9 +13,8 @@ import getSeveralArtistsTopTracks from "@/pages/api/getSeveralArtistsTopTracks";
 import { SpotifyContext } from "@/context/spotifyContext";
 
 const ProfilePage = React.memo((props) => {
-  let {token, isTokenValid, setToken} = useContext(SpotifyContext)
-  console.log("Spotify token: ", token)
-  console.log("Is token valid: ", isTokenValid)
+  const {spotifyTokenState, updateSpotifyToken} = useContext(SpotifyContext)
+  console.log("Context: ", spotifyTokenState)
   const [isLoading, setIsLoading] = useState(true);
   const [displayName, setDisplayName] = useState(null);
   const [images, setImages] = useState([]);
@@ -31,7 +30,7 @@ const ProfilePage = React.memo((props) => {
   useEffect(() => {
     setIsLoading(true);
     async function fetchData() {
-      return await getProfile(token, isTokenValid);
+      return await getProfile(spotifyTokenState.token, spotifyTokenState.isTokenValid);
     }
     fetchData().then((data) => {
       console.log("Profile Items: ", data);
@@ -43,10 +42,9 @@ const ProfilePage = React.memo((props) => {
       setIsLoading(false);
       setUserId(data.data.id);
       console.log("ID: ", data.data.id);
-      if (data.token !== token) {
-        console.log("not equal: ", data.token, "\n", token)
-        setToken(data.token)
-        token = data.token
+      if (data.token !== spotifyTokenState.token) {
+        console.log("not equal: ", "New Token: ", data.token, "\n", "Old Token: ", spotifyTokenState.token)
+        updateSpotifyToken(data.token, data.expires_in )
       }
     });
   }, []);
