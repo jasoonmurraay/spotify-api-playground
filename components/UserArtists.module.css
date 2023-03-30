@@ -1,0 +1,86 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.img {
+    width: 15rem;
+    height: 15rem;
+    border-radius: 5%;
+}
+
+.card {
+    width: 15rem;
+    height: auto;
+    margin: 2rem;
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 0.15rem solid rgba(204, 204, 204, 0.459);
+    border-radius: 5%;
+}
+
+.cardBody,
+.artistDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.artistUl {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0;
+}
+
+.artistDiv {
+    justify-content: center;
+}
+
+.artistName {
+    list-style-type: none;
+}
+
+.artist,
+.artistName {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0;
+}
+
+.artists {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    text-decoration: none;
+    color: #1DB954;
+}
+
+.artists:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 0.1rem;
+    font-weight: 700;
+}
+
+.profileButton {
+    background-color: #1DB954;
+    color: white;
+    border: 1px solid white;
+    padding: 1rem;
+    border-radius: 20px;
+}
+
+.profileButton:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}

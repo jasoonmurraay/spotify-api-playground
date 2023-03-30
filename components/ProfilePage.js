@@ -13,7 +13,7 @@ import getSeveralArtistsTopTracks from "@/pages/api/getSeveralArtistsTopTracks";
 import { SpotifyContext } from "@/context/spotifyContext";
 
 const ProfilePage = React.memo((props) => {
-  const {spotifyTokenState, updateSpotifyToken} = useContext(SpotifyContext)
+  const { spotifyTokenState, updateSpotifyToken, updateId } = useContext(SpotifyContext)
   console.log("Context: ", spotifyTokenState)
   const [isLoading, setIsLoading] = useState(true);
   const [displayName, setDisplayName] = useState(null);
@@ -21,11 +21,6 @@ const ProfilePage = React.memo((props) => {
   const [followers, setFollowers] = useState(0);
   const [link, setLink] = useState("");
   const [country, setCountry] = useState("");
-  const [fetchType, setFetchType] = useState(null);
-  const [tracks, setTracks] = useState([]);
-  const [artists, setArtists] = useState([]);
-  const [genres, setGenres] = useState([]);
-  const [playlists, setPlaylists] = useState([]);
   const [userId, setUserId] = useState(null);
   useEffect(() => {
     setIsLoading(true);
@@ -42,146 +37,25 @@ const ProfilePage = React.memo((props) => {
       setIsLoading(false);
       setUserId(data.data.id);
       console.log("ID: ", data.data.id);
+      if (userId !== spotifyTokenState.id) {
+        console.log("Updating user Id context!")
+        updateId(data.data.id)
+      }
       if (data.token !== spotifyTokenState.token) {
         console.log("not equal: ", "New Token: ", data.token, "\n", "Old Token: ", spotifyTokenState.token)
-        updateSpotifyToken(data.token, data.expires_in )
+        updateSpotifyToken(data.token, data.expires_in)
       }
     });
   }, []);
+  console.log("Id: ", userId)
 
-  useDidMountEffect(() => {
-    if (fetchType === "playlists") {
-      async function fetchPlaylists() {
-        return await getUserPlaylists(userId, true, token, isTokenValid);
-      }
-      fetchPlaylists().then((data) => {
-        setPlaylists(data);
-        console.log("Playlists: ", data);
-        setIsLoading(false);
-      });
-    } else if (fetchType === "genres") {
-      async function fetchGenres() {
-        return await getGenres();
-      }
-      fetchGenres().then((data) => {
-        console.log("Fetched data type: ", data);
-        // setGenres(data.slice(0, 10));
-        setIsLoading(false);
-      });
-    } else {
-      async function getType() {
-        return await getProfileDataType(fetchType);
-      }
-      getType().then((data) => {
-        console.log("fetched data type: ", data);
-        if (fetchType === "tracks") {
-          setTracks(data.items);
-          setIsLoading(false);
-        } else {
-          setArtists(data.items);
-          setIsLoading(false);
-        }
-      });
-    }
-  }, [fetchType]);
-  const fetchHandler = (value) => {
-    if (value.includes("Tracks")) {
-      setFetchType("tracks");
-      setIsLoading(true);
-    } else if (value.includes("Playlists")) {
-      setFetchType("playlists");
-      setIsLoading(true);
-    } else if (value.includes("Artists")) {
-      setFetchType("artists");
-      setIsLoading(true);
-    } else if (value.includes("Genres")) {
-      setFetchType("genres");
-      setIsLoading(true);
-    }
-  };
 
-  const reorderHandler = (id) => {
-    const reorderPlaylist = async (id) => {
-      return await props.modify(id)
-    }
-    reorderPlaylist(id).then((data) => {
-      console.log("Reorder data: ", data)
-    })
-  }
 
-  const renderTracks = () => {
-    return tracks.map((track) => {
-      return (
-        <div className="card col-xl-3 col-md-4 col-12 d-flex align-items-center justify-content-center">
-          <li key={track.id}>
-            <img className="card-img" src={track.album.images[0].url} alt="" />
-            <h2 className="card-title">{track.name}</h2>
-            <div>
-              {track.artists.length === 1 ? "Artist: " : "Artists: "}{" "}
-              <ul>
-                {track.artists.map((artist) => {
-                  return (
-                    <a key={artist.id} href={artist.external_urls.spotify}>
-                      <li>{artist.name}</li>
-                    </a>
-                  );
-                })}
-              </ul>
-            </div>
-          </li>
-        </div>
-      );
-    });
-  };
-  const renderArtists = () => {
-    return artists.map((artist) => {
-      return (
-        <div
-          className={`${classes.card} card col-xl-3 col-md-4 col-12 d-flex align-items-center justify-content-center`}
-        >
-          <li key={artist.id}>
-            {artist.images.length ? (
-              <img
-                className={`${classes.img} card-img`}
-                src={artist.images[0].url}
-                alt=""
-              />
-            ) : (
-              <></>
-            )}
-            <a href={artist.external_urls.spotify}>
-              <h2 className="card-title">{artist.name}</h2>
-            </a>
 
-          </li>
-        </div>
-      );
-    });
-  };
+
   const renderGenres = () => {
     return genres.map((genre) => {
       return <li key={genre[0]}>{genre[0]}</li>;
-    });
-  };
-  const renderPlaylists = () => {
-    return playlists.items.map((playlist) => {
-      return (
-        <li key={playlist.id}>
-          <div
-            className={`${classes.card} card col-xl-3 col-md-4 col-12 d-flex align-items-center justify-content-center`}
-          >
-            <img
-              className={`${classes.img} card-img`}
-              src={playlist.images[0].url}
-              alt=""
-            />
-            <a href={playlist.external_urls.spotify}>
-              <h2 className="card-title">{playlist.name}</h2>
-            </a>
-            <ButtonComponent id={playlist.id} onClick={reorderHandler} text='Re-order playlist' />
-          </div>
-        </li>
-      );
     });
   };
   const generatePlaylist = async (e) => {
@@ -190,7 +64,7 @@ const ProfilePage = React.memo((props) => {
   }
   return (
     <>
-      {!fetchType && !isLoading && (
+      {!isLoading && (
         <>
           <div className="card col-xl-3 col-md-4 col-12 d-flex align-items-center justify-content-center">
             <a href={link}>
@@ -202,47 +76,11 @@ const ProfilePage = React.memo((props) => {
             </p>
             <p>{country}</p>
           </div>
+          <Link href={'/profile/toptracks'}>Get Top Tracks</Link>
+          <Link href={'/profile/artists'}>Get Top Artists</Link>
+          <ButtonComponent text="Get top Genres" />
+          <Link href={'/profile/playlists'}>Get Playlists</Link>
         </>
-      )}
-      {fetchType === "tracks" && !isLoading && (
-        <>
-          <h1>Top Tracks</h1>
-          <ol>{renderTracks()}</ol>
-        </>
-      )}
-      {fetchType === "artists" && !isLoading && (
-        <>
-          <h1>Top Artists</h1>
-          <button type='button' onClick={generatePlaylist} className="btn btn-primary">Generate Playlist</button>
-          <ol>{renderArtists()}</ol>
-        </>
-      )}
-      {fetchType === "genres" && !isLoading && (
-        <>
-          <h1>Top Genres</h1>
-          <ol>{renderGenres()}</ol>
-        </>
-      )}
-      {fetchType === "playlists" && !isLoading && (
-        <>
-          <h1>Playlists</h1>
-          <ul>{renderPlaylists()}</ul>
-        </>
-      )}
-      {fetchType !== "tracks" && !isLoading && (
-        <ButtonComponent onClick={fetchHandler} text="Get top Tracks" />
-      )}
-      {fetchType !== "artists" && !isLoading && (
-        <ButtonComponent onClick={fetchHandler} text="Get top Artists" />
-      )}
-      {fetchType !== "genres" && !isLoading && (
-        <ButtonComponent onClick={fetchHandler} text="Get top Genres" />
-      )}
-      {fetchType !== "playlists" && !isLoading && (
-        <ButtonComponent
-          onClick={fetchHandler}
-          text="Get user Playlists"
-        ></ButtonComponent>
       )}
     </>
   );

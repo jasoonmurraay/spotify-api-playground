@@ -1,5 +1,4 @@
-import getAccessToken from "@/pages/api/getAccessToken";
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useState } from "react";
 
 export const SpotifyContext = createContext();
 
@@ -8,7 +7,17 @@ export const SpotifyProvider = ({ children }) => {
     token: typeof window !== 'undefined' ? localStorage.getItem('token') : null,
     expirationTime: typeof window !== 'undefined' ? localStorage.getItem('expirationTime') : null,
     isTokenValid: typeof window !== 'undefined' ? localStorage.getItem('expirationTime') > Date.now() : null,
+    id: typeof window !== 'undefined' ? localStorage.getItem('userId') : null
   });
+
+  const updateId = (id) => {
+    localStorage.setItem('userId', id)
+    setSpotifyTokenState({
+      ...spotifyTokenState,
+      id: id
+    })
+  }
+
   const updateSpotifyToken = (newToken, newExpiresIn) => {
     const newExpirationTime = Date.now() + newExpiresIn * 1000
     localStorage.setItem('token', newToken)
@@ -83,7 +92,7 @@ export const SpotifyProvider = ({ children }) => {
   // const isTokenValid = expirationTime && expirationTime > Date.now();
 
   return (
-    <SpotifyContext.Provider value={{ spotifyTokenState, updateSpotifyToken }}>
+    <SpotifyContext.Provider value={{ spotifyTokenState, updateSpotifyToken, updateId }}>
       {children}
     </SpotifyContext.Provider>
   );
