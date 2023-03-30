@@ -2,10 +2,16 @@ import getAccessToken from "./getAccessToken"
 import axios from "axios"
 
 
-const getProfileDataType = async (type) => {
+const getProfileDataType = async (type, ProvidedToken, isTokenValid) => {
+  console.log("provided token: ", ProvidedToken)
+  let token
   console.log("Type: ", type)
-  let token = await getAccessToken()
-  token = token.data.access_token
+  if (isTokenValid === true) {
+    token = ProvidedToken
+  } else {
+    token = await getAccessToken()
+    token = token.data.access_token
+  }
   const url = `https://api.spotify.com/v1/me/top/${type}`
   let limitNo = 20
   let timeRange = 'long_term'
@@ -23,7 +29,7 @@ const getProfileDataType = async (type) => {
       }
     );
     console.log("Profile data: ", data);
-    return data;
+    return { token: token, data };
   } catch (e) {
     return e
   }

@@ -2,7 +2,9 @@ import axios from "axios";
 import getAccessToken from "./getAccessToken";
 import getProfile from "./getProfile";
 
-const getUserPlaylists = async (userId, getUserOnly, providedToken, isTokenValid) => {
+const getUserPlaylists = async (userId, getUserOnly = true, providedToken, isTokenValid) => {
+  console.log("Getting user Playlists: ", userId, providedToken, isTokenValid)
+  const id = userId
   let token
   if (isTokenValid === true) {
     token = providedToken
@@ -26,12 +28,13 @@ const getUserPlaylists = async (userId, getUserOnly, providedToken, isTokenValid
     );
     if (getUserOnly === true) {
       for (let i = 0; i < data.items.length; i++) {
-        console.log(data.items[i].owner.id, userId);
+        console.log(data.items[i].owner.id, id);
 
-        if (data.items[i].owner.id === userId) {
+        if (data.items[i].owner.id === id) {
           playlists.push(data.items[i]);
         }
       }
+      console.log("Got playlists!! ", data.next, data.previous, playlists)
       return {
         next: data.next,
         previous: data.previous,
