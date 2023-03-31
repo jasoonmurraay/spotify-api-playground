@@ -1,0 +1,25 @@
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loadingDot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #000;
+    margin: 0 5px;
+    animation: loading-dot 0.6s infinite alternate;
+}
+
+@keyframes loading-dot {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(1.5);
+    }
+}

@@ -4,13 +4,14 @@
     align-items: center;
     justify-content: center;
     background-color: black;
-    color: white;
+    color: #1DB954;
 }
 
 .img {
-    width: 15rem;
-    height: 15rem;
+    width: 30rem;
+    height: 30rem;
     border-radius: 5%;
+    border: 0.25rem solid #1DB954;
 }
 
 .card {
@@ -21,9 +22,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    border: 0.15rem solid white;
+    border: 0.15rem solid rgba(204, 204, 204, 0.459);
     border-radius: 5%;
-    transition: transform 0.3s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
 .cardBody,
@@ -46,24 +46,6 @@
 
 .artistName {
     list-style-type: none;
-    text-decoration: none;
-    color: white;
-}
-
-
-
-.link {
-    text-decoration: none;
-}
-
-.card:hover .artistName {
-    color: #1DB954;
-}
-
-.card:hover {
-    border-color: #1DB954;
-    transform: translateY(-5px);
-    box-shadow: 0 5px 10px #1DB954;
 }
 
 .artist,
@@ -73,12 +55,34 @@
     justify-content: center;
 }
 
+
+
 .list {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     padding: 0;
     list-style-type: none;
+
+}
+
+.genre {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+}
+
+.artists {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    text-decoration: none;
+    color: #1DB954;
+}
+
+.artists:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 0.1rem;
+    font-weight: 700;
 }
 
 .profileButton {
@@ -92,4 +96,11 @@
 .profileButton:hover {
     cursor: pointer;
     text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    .img {
+        width: 15rem;
+        height: 15rem;
+    }
 }
