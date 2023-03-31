@@ -10,18 +10,19 @@ const UserArtists = (props) => {
                     <div
                         className={`${classes.card} card col-xl-3 col-md-4 col-12 d-flex align-items-center justify-content-center`}
                     >
-                        {artist.images.length ? (
-                            <img
-                                className={`${classes.img} card-img`}
-                                src={artist.images[0].url}
-                                alt=""
-                            />
-                        ) : (
-                            <></>
-                        )}
-                        <a href={artist.external_urls.spotify}>
-                            <h2 className="card-title">{artist.name}</h2>
-                        </a>
+                        <Link className={`${classes.link}`} href={`/artists/${artist.id}`}>
+                            {artist.images.length ? (
+                                <img
+                                    className={`${classes.img} card-img`}
+                                    src={artist.images[0].url}
+                                    alt={`Image of ${artist.name}`}
+                                />
+                            ) : (
+                                <></>
+                            )}
+
+                            <h2 className={`${classes.artistName} card-title`}>{artist.name}</h2>
+                        </Link>
                     </div>
                 </li>
 
@@ -31,10 +32,10 @@ const UserArtists = (props) => {
     return (
         <>
             <div className={`${classes.content}`}>
-                <h1>Top Artists</h1>
                 <Link href={'/profile'}>
                     <button className={`${classes.profileButton}`}>Back to profile</button>
                 </Link>
+                <h1>Top Artists</h1>
                 <ul className={`${classes.list}`}>{renderArtists()}</ul>
                 <Link href={'/profile'}>
                     <button className={`${classes.profileButton}`}>Back to profile</button>
