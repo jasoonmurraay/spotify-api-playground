@@ -4,6 +4,13 @@
     align-items: center;
     justify-content: center;
     background-color: black;
+    color: white;
+}
+
+.playlistItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .img {
@@ -22,9 +29,11 @@
     margin: 2rem;
     list-style-type: none;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-between;
     border: 0.15rem solid white;
     border-radius: 5%;
+    color: white;
 }
 
 .trackName {
@@ -39,32 +48,21 @@
 }
 
 
-.cardBody,
-.artistDiv {
+.cardBody {
     display: flex;
     flex-direction: column;
     align-items: center;
     color: white;
 }
 
-.artistUl {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0;
-}
-
-.artistDiv {
-    justify-content: center;
-    padding: 0 0 1rem 0;
-}
-
-.artistName {
+.name {
     list-style-type: none;
+    text-decoration: none;
+    color: white;
 }
 
-.artist,
-.artistName {
+.creator,
+.name {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -108,4 +106,18 @@
     transform: translateY(-5px);
     box-shadow: 0 5px 10px #1DB954;
     cursor: pointer;
+}
+
+.reorderButton {
+    background-color: #1DB954;
+    color: white;
+    border-radius: 20px;
+    border: 1px solid #1DB954;
+}
+
+.reorderButton:hover {
+    border-color: #1DB954;
+    cursor: pointer;
+    transform: translateY(-2.5px);
+    box-shadow: 0 5px 10px white;
 }
