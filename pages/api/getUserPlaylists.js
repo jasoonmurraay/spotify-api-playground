@@ -29,8 +29,7 @@ const getUserPlaylists = async (userId, getUserOnly = true, providedToken, isTok
     if (getUserOnly === true) {
       for (let i = 0; i < data.items.length; i++) {
         console.log(data.items[i].owner.id, id);
-
-        if (data.items[i].owner.id === id) {
+        if (data.items[i].owner.id === id || data.items[i].owner.id === 'spotify') {
           playlists.push(data.items[i]);
         }
       }

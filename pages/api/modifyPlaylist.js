@@ -40,7 +40,7 @@ const modifyPlaylist = async (playlistId) => {
             for (let i = 0; i < data.data.audio_features.length; i++) {
                 let score = 0
                 let track = data.data.audio_features[i]
-                score += (track.danceability + track.energy - track.loudness + track.mode + (0.05 * track.tempo) + track.valence)
+                score += (track.danceability + track.energy - track.loudness + track.mode + (0.5 * track.tempo) + track.valence)
                 scoreArray.push([track.id, track.uri, score, i])
             }
         })
@@ -70,12 +70,7 @@ const modifyPlaylist = async (playlistId) => {
         console.log("Lower: ", lowerBound)
         console.log("Higher: ", higherBound)
         for (let i = start; i < higherBound; i++) {
-            if (i === 0) {
-                uriArrayString += uriArray[i]
-            } else {
-                uriArrayString += ',' + uriArray[i]
-            }
-
+            uriArrayString += (i === start ? '' : ',') + uriArray[i]
         }
         console.log("URI as string: ", uriArrayString)
         // await corsHandler()
@@ -93,15 +88,14 @@ const modifyPlaylist = async (playlistId) => {
             }
         }).then((data) => {
             console.log("modified data: ", data)
-            lowerBound += 100
-            start += 100
-            higherBound = (higherBound + 100 >= uriArray.length ? uriArray.length : higherBound + 100)
-            uriArrayString = ''
         }).catch((e) => {
             console.log("Error: ", e)
             error = true
         })
-
+        lowerBound += 100
+        start += 100
+        higherBound = (higherBound + 100 >= uriArray.length ? uriArray.length : higherBound + 100)
+        uriArrayString = ''
     }
     return await getPlaylist(playlistId)
 }

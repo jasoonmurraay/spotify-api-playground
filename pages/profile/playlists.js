@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import { useEffect, useState, useContext } from "react";
 import { SpotifyContext } from "@/context/spotifyContext";
 import getUserPlaylists from "../api/getUserPlaylists";
+import modifyPlaylist from "../api/modifyPlaylist";
+import Navbar from "@/components/Navbar";
 
 const playlists = (props) => {
   const { spotifyTokenState, updateSpotifyToken, updateId } = useContext(SpotifyContext)
@@ -35,7 +37,12 @@ const playlists = (props) => {
   }
 
 
-  return <>{!isLoading && <UserPlaylists modify={modifyPlaylistHandler} playlists={playlists} />}</>;
+  return <>
+    {!isLoading && <>
+      <Navbar></Navbar>
+      <UserPlaylists modify={modifyPlaylistHandler} playlists={playlists} />
+    </>}
+  </>;
 };
 
 export default playlists;
