@@ -3,10 +3,16 @@ import getAccessToken from './getAccessToken'
 import getPlaylist from './getPlaylist'
 import getPlaylistTracks from './getPlaylistTracks'
 
-const modifyPlaylist = async (playlistId) => {
+const modifyPlaylist = async (playlistId, providedToken, expirationTime) => {
+    let token;
+    if (providedToken && expirationTime > Date.now()) {
+        token = providedToken
+    } else {
+        token = await getAccessToken()
+        token = token.data.access_token
+    }
     console.log("Modifying playlist id ", playlistId)
-    let token = await getAccessToken()
-    token = token.data.access_token
+
     console.log("Got token! ", token)
     let playlist = await getPlaylistTracks(playlistId)
     console.log("Got tracks!")

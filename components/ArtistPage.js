@@ -9,7 +9,7 @@ const ArtistPage = (props) => {
   return (
     <div className={`${classes.content}`}>
       <h1>{props.artistName}</h1>
-      <img className={`${classes.img}`} src={props.images[0].url} alt={`A picture of ${props.artistName}`} />
+      {props.images.length ? <img className={`${classes.img}`} src={props.images[0].url} alt={`A picture of ${props.artistName}`} /> : <></>}
       <p>{`${props.followers} followers`}</p>
       <ul className={`${classes.list}`}>{renderGenres()}</ul>
 

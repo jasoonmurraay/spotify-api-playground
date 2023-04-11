@@ -11,6 +11,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    max-width: 20rem;
+    max-height: 35rem;
 }
 
 .img {
@@ -53,6 +55,7 @@
     flex-direction: column;
     align-items: center;
     color: white;
+
 }
 
 .name {
@@ -115,7 +118,8 @@
     border: 1px solid #1DB954;
 }
 
-.reorderButton:hover {
+.reorderButton:hover,
+.copyButton:hover {
     border-color: #1DB954;
     cursor: pointer;
     transform: translateY(-2.5px);
@@ -125,7 +129,7 @@
 .copyButton {
     background-color: #1DB954;
     color: white;
-    border: 1px solid white;
+    border: 1px solid #1DB954;
     border-radius: 20px;
     width: 60%;
     margin-top: 0.5rem;

@@ -1,37 +1,41 @@
-import getUserPlaylists from "@/pages/api/getUserPlaylists";
 import { useEffect, useState, useContext, useRef } from "react";
 import { SpotifyContext } from "@/context/spotifyContext";
 import classes from "./UserPlaylists.module.css";
-import ButtonComponent from "./ButtonComponent";
 import copyPlaylist from "@/pages/api/copyPlaylist";
-import { render } from "react-dom";
+import Link from "next/link";
 
 const UserPlaylists = (props) => {
   const { spotifyTokenState, updateSpotifyToken, updateId } =
     useContext(SpotifyContext);
-    const playlistRef = useRef()
+  const newNameRef = useRef()
   const [fillForm, setFillForm] = useState(false);
   const [copyType, setCopyType] = useState(null);
   const [existingPlaylist, setExistingPlaylist] = useState(null);
+  const [newPlaylist, setNewPlaylist] = useState(null)
   const playlists = props.playlists;
-  const copyHandler = async (event) => {
-    setFillForm(true);
-    console.log("Setting existing playlist: ", event.target.value)
-    setExistingPlaylist(event.target.value)
-  };
-  const copySubmitHandler = (event) => {
+  const copySubmitHandler = async (event) => {
     event.preventDefault()
-    console.log('Copy: ', existingPlaylist)
+    let values = event.target.value.split(',')
+    console.log(event.target.value)
+    console.log("Playlists: ", values)
+    await copyPlaylist(values[0], spotifyTokenState.token, spotifyTokenState.expirationTime, copyType === 'existing' ? values[1] : null, copyType === 'new' ? (newNameRef.current.value.length ? newNameRef.current.value : 'New Playlist') : null, spotifyTokenState.id)
+    setFillForm(false)
+    setCopyType(null)
+    setExistingPlaylist(null)
+    setNewPlaylist(null)
   };
   const cancelCopyHandler = (event) => {
     event.preventDefault();
     setFillForm(false);
+    setExistingPlaylist(null)
+    setNewPlaylist(null)
   };
-  const reorderHandler = (id) => {
+  const reorderHandler = (event) => {
     const reorderPlaylist = async (id) => {
+      console.log("Playlist id: ", id)
       return await props.modify(id);
     };
-    reorderPlaylist(id).then((data) => {
+    reorderPlaylist(event.target.id).then((data) => {
       console.log("Reorder data: ", data);
     });
   };
@@ -41,7 +45,7 @@ const UserPlaylists = (props) => {
         return (
           <>
             <input
-              onClick={() => setExistingPlaylist(playlist.id)}
+              onClick={() => setNewPlaylist(playlist.id)}
               type="radio"
               name="existPlaylistSelector"
               id={playlist.id}
@@ -61,16 +65,16 @@ const UserPlaylists = (props) => {
             className={`${classes.card} card col-xl-3 col-md-4 col-12 d-flex align-items-center justify-content-center`}
             key={playlist.id}
           >
-            <a
+            <Link
               className={`${classes.name}`}
-              href={playlist.external_urls.spotify}
+              href={`/playlists/${playlist.id}`}
             >
               <div className={`${classes.cardBody}`}>
-                <img
+                {playlist.images.length && <img
                   className={`${classes.img} card-img`}
                   src={playlist.images[0].url}
                   alt=""
-                />
+                />}
 
                 <h2 className={` card-title`}>{playlist.name}</h2>
 
@@ -80,20 +84,21 @@ const UserPlaylists = (props) => {
                   </p>
                 )}
               </div>
-            </a>
+            </Link>
           </li>
           {playlist.owner.id === spotifyTokenState.id && (
             <button
               className={`${classes.reorderButton}`}
               id={playlist.id}
               onClick={reorderHandler}
+              value={playlist.id}
             >{`Re-order ${playlist.name}`}</button>
           )}
           <button
             className={`${classes.copyButton}`}
-            onClick={copyHandler}
+            onClick={() => { setFillForm(true); setExistingPlaylist(playlist.id); console.log("Existing playlist set: ", existingPlaylist) }}
             value={playlist.id}
-          >{`Copy ${playlist.name}'s Items to Another Playlist`}</button>
+          >{`Copy ${playlist.name.length > 20 ? `${playlist.name.substring(0, 20)}...` : playlist.name}'s Items to Another Playlist`}</button>
         </div>
       );
     });
@@ -106,7 +111,6 @@ const UserPlaylists = (props) => {
             <input
               onClick={() => {
                 setCopyType("new");
-                setExistingPlaylist(null);
               }}
               type="radio"
               value="new"
@@ -128,7 +132,7 @@ const UserPlaylists = (props) => {
           {copyType === "new" && (
             <>
               <label htmlFor="name">New Playlist name</label>
-              <input id="name" type="text" />
+              <input ref={newNameRef} id="name" type="text" />
             </>
           )}
           {copyType === "existing" && (
@@ -139,7 +143,7 @@ const UserPlaylists = (props) => {
           {copyType && (
             <>
               <button onClick={cancelCopyHandler}>Cancel</button>
-              <button onClick={copySubmitHandler}>Submit</button>
+              <button value={[existingPlaylist, newPlaylist]} onClick={copySubmitHandler}>Submit</button>
             </>
           )}
         </form>

@@ -1,0 +1,71 @@
+.content {
+    background-color: black;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.card,
+.cardBody,
+.trackList {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.img {
+    height: 15rem;
+    width: 15rem;
+    border-radius: 20px;
+}
+
+.track {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+    border: 1px solid white;
+    margin: 1rem 0;
+    border-radius: 20px;
+}
+
+.trackTitle {
+    margin: 0.75rem;
+}
+
+.artistList {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    list-style-type: none;
+    text-align: end;
+    padding-right: 1rem;
+    margin: 0.75rem;
+}
+
+.artistLink {
+    text-decoration: none;
+    color: white;
+}
+
+.artistLink:hover {
+    color: #1DB954;
+}
+
+.reorderButton {
+    background-color: #1DB954;
+    color: white;
+    border-radius: 20px;
+    border: 1px solid #1DB954;
+}
+
+.reorderButton:hover {
+    border-color: #1DB954;
+    cursor: pointer;
+    transform: translateY(-2.5px);
+    box-shadow: 0 5px 10px white;
+}
