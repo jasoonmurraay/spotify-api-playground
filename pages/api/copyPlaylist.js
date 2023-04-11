@@ -20,7 +20,6 @@ async function copyPlaylist(playlistId, providedToken, expirationTime, providedN
         const sourcePlaylist = sourcePlaylistResponse.data;
         const trackUris = sourcePlaylist.tracks.items.map(item => item.track.uri);
 
-        // Create a new playlist with the same name as the source playlist
         if (!providedNewPlaylist) {
             const newPlaylistResponse = await axios.post('https://api.spotify.com/v1/users/me/playlists', {
                 name: destinationPlaylistName,

@@ -121,3 +121,12 @@
     transform: translateY(-2.5px);
     box-shadow: 0 5px 10px white;
 }
+
+.copyButton {
+    background-color: #1DB954;
+    color: white;
+    border: 1px solid white;
+    border-radius: 20px;
+    width: 60%;
+    margin-top: 0.5rem;
+}
