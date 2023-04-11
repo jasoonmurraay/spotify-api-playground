@@ -16,11 +16,11 @@ const playlists = (props) => {
   useEffect(() => {
     if (id) {
       async function retrievePlaylists() {
-        return await getUserPlaylists(id, true, spotifyTokenState.token, spotifyTokenState.isTokenValid)
+        return await getUserPlaylists(id, spotifyTokenState.token, spotifyTokenState.isTokenValid)
       }
       retrievePlaylists().then(data => {
         console.log("Playlist response: ", data)
-        setPlaylists(data.items)
+        setPlaylists(data)
         setIsLoading(false)
       })
     }
