@@ -6,6 +6,10 @@
     background-color: black;
 }
 
+.invisible {
+    opacity: 0;
+}
+
 .img {
     width: 15rem;
     height: 15rem;
@@ -25,6 +29,13 @@
     justify-content: center;
     border: 0.15rem solid white;
     border-radius: 5%;
+    animation: fadeIn 750ms;
+}
+
+@keyframes fadeIn {
+    0% {opacity: 0}
+    100% {opacity: 1;
+    transform: translateY(-20px);}
 }
 
 .trackName {

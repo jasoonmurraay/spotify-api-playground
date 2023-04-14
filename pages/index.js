@@ -8,31 +8,32 @@ import login from "./api/login";
 import dotenv from "dotenv";
 import getAccessToken from "./api/getAccessToken";
 import AppContext from "@/context/spotifyContext";
+import Footer from "@/components/Footer";
 
 dotenv.config();
 
 export default function Home() {
   const [token, setToken] = useState("");
-  const [loggedIn, setLoggedIn] = useState(false)
+  const [loggedIn, setLoggedIn] = useState(false);
   // const loginHandler = () => {
   //     login()
   // }
 
   useEffect(() => {
     async function getToken() {
-      return await getAccessToken()
+      return await getAccessToken();
     }
-    getToken().then(response => {
-      setToken(response.data.access_token)
-      console.log("token: ", response.data.access_token)
-      setLoggedIn(true)
-      window.localStorage.setItem('token', response.data.access_token)
-    })
+    getToken().then((response) => {
+      setToken(response.data.access_token);
+      console.log("token: ", response.data.access_token);
+      setLoggedIn(true);
+      window.localStorage.setItem("token", response.data.access_token);
+    });
   }, []);
   const logoutHandler = (event) => {
     event.preventDefault();
     window.localStorage.removeItem("token");
-    setLoggedIn(false)
+    setLoggedIn(false);
   };
 
   const clientId = process.env.SPOTIFY_CLIENT_ID;
@@ -67,6 +68,7 @@ export default function Home() {
           <Link href="/artists">Search Artists</Link>
         </button>
       )}
+      <Footer />
     </>
   );
 }
