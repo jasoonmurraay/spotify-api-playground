@@ -7,32 +7,43 @@ import Link from "next/link";
 const UserPlaylists = (props) => {
   const { spotifyTokenState, updateSpotifyToken, updateId } =
     useContext(SpotifyContext);
-  const newNameRef = useRef()
+  const newNameRef = useRef();
   const [fillForm, setFillForm] = useState(false);
   const [copyType, setCopyType] = useState(null);
   const [existingPlaylist, setExistingPlaylist] = useState(null);
-  const [newPlaylist, setNewPlaylist] = useState(null)
+  const [newPlaylist, setNewPlaylist] = useState(null);
   const playlists = props.playlists;
   const copySubmitHandler = async (event) => {
-    event.preventDefault()
-    let values = event.target.value.split(',')
-    console.log(event.target.value)
-    console.log("Playlists: ", values)
-    await copyPlaylist(values[0], spotifyTokenState.token, spotifyTokenState.expirationTime, copyType === 'existing' ? values[1] : null, copyType === 'new' ? (newNameRef.current.value.length ? newNameRef.current.value : 'New Playlist') : null, spotifyTokenState.id)
-    setFillForm(false)
-    setCopyType(null)
-    setExistingPlaylist(null)
-    setNewPlaylist(null)
+    event.preventDefault();
+    let values = event.target.value.split(",");
+    console.log(event.target.value);
+    console.log("Playlists: ", values);
+    await copyPlaylist(
+      values[0],
+      spotifyTokenState.token,
+      spotifyTokenState.expirationTime,
+      copyType === "existing" ? values[1] : null,
+      copyType === "new"
+        ? newNameRef.current.value.length
+          ? newNameRef.current.value
+          : "New Playlist"
+        : null,
+      spotifyTokenState.id
+    );
+    setFillForm(false);
+    setCopyType(null);
+    setExistingPlaylist(null);
+    setNewPlaylist(null);
   };
   const cancelCopyHandler = (event) => {
     event.preventDefault();
     setFillForm(false);
-    setExistingPlaylist(null)
-    setNewPlaylist(null)
+    setExistingPlaylist(null);
+    setNewPlaylist(null);
   };
   const reorderHandler = (event) => {
     const reorderPlaylist = async (id) => {
-      console.log("Playlist id: ", id)
+      console.log("Playlist id: ", id);
       return await props.modify(id);
     };
     reorderPlaylist(event.target.id).then((data) => {
@@ -70,11 +81,13 @@ const UserPlaylists = (props) => {
               href={`/playlists/${playlist.id}`}
             >
               <div className={`${classes.cardBody}`}>
-                {playlist.images.length && <img
-                  className={`${classes.img} card-img`}
-                  src={playlist.images[0].url}
-                  alt=""
-                />}
+                {playlist.images.length && (
+                  <img
+                    className={`${classes.img} card-img`}
+                    src={playlist.images[0].url}
+                    alt=""
+                  />
+                )}
 
                 <h2 className={` card-title`}>{playlist.name}</h2>
 
@@ -96,9 +109,17 @@ const UserPlaylists = (props) => {
           )}
           <button
             className={`${classes.copyButton}`}
-            onClick={() => { setFillForm(true); setExistingPlaylist(playlist.id); console.log("Existing playlist set: ", existingPlaylist) }}
+            onClick={() => {
+              setFillForm(true);
+              setExistingPlaylist(playlist.id);
+              console.log("Existing playlist set: ", existingPlaylist);
+            }}
             value={playlist.id}
-          >{`Copy ${playlist.name.length > 20 ? `${playlist.name.substring(0, 20)}...` : playlist.name}'s Items to Another Playlist`}</button>
+          >{`Copy ${
+            playlist.name.length > 20
+              ? `${playlist.name.substring(0, 20)}...`
+              : playlist.name
+          }'s Items to Another Playlist`}</button>
         </div>
       );
     });
@@ -106,7 +127,7 @@ const UserPlaylists = (props) => {
   return (
     <>
       {fillForm && (
-        <form onSubmit={copySubmitHandler}>
+        <form className={`${classes.copyForm}`} onSubmit={copySubmitHandler}>
           <fieldset>
             <input
               onClick={() => {
@@ -143,7 +164,12 @@ const UserPlaylists = (props) => {
           {copyType && (
             <>
               <button onClick={cancelCopyHandler}>Cancel</button>
-              <button value={[existingPlaylist, newPlaylist]} onClick={copySubmitHandler}>Submit</button>
+              <button
+                value={[existingPlaylist, newPlaylist]}
+                onClick={copySubmitHandler}
+              >
+                Submit
+              </button>
             </>
           )}
         </form>

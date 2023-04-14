@@ -6,6 +6,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import modifyPlaylist from "../api/modifyPlaylist";
 import classes from "../../styles/PlaylistId.module.css";
+import Footer from "@/components/Footer";
 
 const playlistId = () => {
   const [images, setImages] = useState([]);
@@ -85,7 +86,7 @@ const playlistId = () => {
 
   return (
     <>
-      <Navbar></Navbar>
+      <Navbar />
       <div className={`${classes.content}`}>
         <div className={`${classes.card} card`}>
           <h1 className="card-title">{name}</h1>
@@ -114,6 +115,7 @@ const playlistId = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };
