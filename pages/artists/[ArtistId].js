@@ -1,4 +1,4 @@
-import ArtistPage from "@/components/ArtistPage";
+import classes from "../../styles/ArtistPage.module.css";
 import Navbar from "@/components/Navbar";
 import { useState, useEffect, useContext } from "react";
 import { SpotifyContext } from "@/context/spotifyContext";
@@ -57,18 +57,35 @@ const Artist = () => {
     });
   }
 
+  const renderGenres = () => {
+    return genres.map((genre, index) => {
+      return (
+        <li className={`${classes.genre}`} key={index}>
+          {genre}
+        </li>
+      );
+    });
+  };
+
   return (
     <>
       <Navbar />
       {isPending && <Loading></Loading>}
       {!isPending && (
-        <ArtistPage
-          artistName={artistName}
-          followers={followers}
-          genres={genres}
-          images={images}
-          popularity={popularity}
-        ></ArtistPage>
+        <div className={`${classes.content}`}>
+          <h1>{artistName}</h1>
+          {images.length ? (
+            <img
+              className={`${classes.img}`}
+              src={images[0].url}
+              alt={`A picture of ${artistName}`}
+            />
+          ) : (
+            <></>
+          )}
+          <p>{`${followers} followers`}</p>
+          <ul className={`${classes.list}`}>{renderGenres()}</ul>
+        </div>
       )}
       <Footer />
     </>

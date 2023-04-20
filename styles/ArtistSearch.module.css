@@ -1,9 +1,67 @@
-.img {
-    width: 15rem;
-    height: 15rem;
+.wholePage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-.card {
-    width: 15rem;
-    height: 18rem;
+.body {
+  background-color: black;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  min-height: 100vh;
+}
+
+.searchBar {
+  background-color: black;
+  color: white;
+  border: 1px solid white;
+  border-radius: 10px;
+  margin-right: 1rem;
+  padding: 1rem;
+}
+
+.searchBtn {
+  background-color: #1db954;
+  color: white;
+  border: 1px solid #1db954;
+  border-radius: 10px;
+}
+
+.searchBtn:hover {
+  cursor: pointer;
+  transform: translateY(-3px);
+  box-shadow: 0 0 5px white;
+}
+
+.artistList {
+  display: flex;
+  flex-wrap: wrap;
+  list-style-type: none;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+.artistCard {
+  text-decoration: none;
+}
+
+.nextBtn {
+  background-color: #1db954;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  margin-bottom: 1rem;
+}
+
+.nextBtn:hover,
+.prevBtn:hover {
+  transform: translateY(-5px);
+  cursor: pointer;
 }

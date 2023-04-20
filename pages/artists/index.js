@@ -1,129 +1,103 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useCallback, useEffect } from "react";
 import { SpotifyContext } from "@/context/spotifyContext";
-import "bootstrap/dist/css/bootstrap.css";
-import axios from "axios";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import getArtists from "../api/getArtists";
-import scrollArtists from "../api/scrollArtists";
 import classes from "../../styles/ArtistSearch.module.css";
-import Link from "next/link";
+import Card from "@/components/Card";
 
 const artists = () => {
-  const { spotifyTokenState } = useContext(SpotifyContext);
-  const [artists, setArtists] = useState([]);
+  const { spotifyTokenState, updateSpotifyToken } = useContext(SpotifyContext);
   const [searchKey, setSearchKey] = useState("");
-  const [offset, setOffset] = useState();
   const [error, setError] = useState(false);
-  const [next, setNext] = useState(null);
-  const [prev, setPrev] = useState(null);
+  const [data, setData] = useState(null);
 
   const searchArtists = async (event) => {
     event.preventDefault();
     let value = event.target.name;
-    console.log("Value: ", value)
     let url, searchText;
     if (value === "search") {
       url = "https://api.spotify.com/v1/search";
-      searchText = searchKey
+      searchText = searchKey;
     } else {
-      value === "next" ? (url = next) : (url = prev);
-      searchText = ''
+      value === "next" ? (url = data.next) : (url = data.previous);
+      searchText = "";
     }
-    console.log("URL: ", url)
-    const data = await getArtists(
+    console.log("URL: ", url);
+    const fetchData = await getArtists(
       url,
       searchText,
       spotifyTokenState.token,
       spotifyTokenState.expirationTime
     );
-    console.log("Return: ", data);
-    if (data.error) {
-      setError(data.error);
-      console.log("Return: ", data);
+    console.log("Return: ", fetchData);
+    if (fetchData.error) {
+      setError(fetchData.error);
       return;
     } else {
-      setArtists(data.artists.items);
-      setOffset(data.artists.offset);
-      setNext(data.artists.next);
-      setPrev(data.artists.previous);
-      console.log(data);
+      console.log("fetchData: ", fetchData);
+      setData(fetchData.data.artists);
+      if (fetchData.token !== spotifyTokenState.token) {
+        updateSpotifyToken(fetchData.token, 3600);
+      }
     }
   };
   const renderArtists = () => {
-    return artists.map((artist) => {
-      return (
-        <div
-          key={artist.id}
-          className="col-xl-3 col-md-4 col-12 d-flex align-items-center justify-content-center"
-        >
-          <div className={`${classes.card} card w-5 h-20 align-items-center `}>
-            {artist.images.length ? (
-              <img
-                className={`${classes.img} card-img top`}
-                src={artist.images[0].url}
-              ></img>
-            ) : (
-              <div>No Image Available</div>
-            )}
-            <h3 className="card-title">
-              <Link href={`/artists/${artist.id}`}>{artist.name}</Link>
-            </h3>
-          </div>
-        </div>
-      );
-    });
+    if (data) {
+      return data.items.map((artist) => {
+        return (
+          <li key={artist.id} className={classes.artistCard}>
+            <Card
+              link={`/artists/${artist.id}`}
+              img={artist.images.length ? artist.images[0].url : ""}
+              header={artist.name}
+            />
+          </li>
+        );
+      });
+    }
   };
 
+  const scrollBtn = (name) => {
+    if (data) {
+      return (
+        (name === "next" ? data.next : data.previous) && (
+          <button
+            name={name}
+            className={name === "next" ? classes.nextBtn : classes.prevBtn}
+            onClick={searchArtists}
+          >
+            {name === "next" ? "Next" : "Previous"}
+          </button>
+        )
+      );
+    }
+  };
   return (
-    <>
+    <div className={classes.wholePage}>
       <Navbar />
-      <h1>Search for Artists on Spotify</h1>
-      <form name="search" onSubmit={searchArtists}>
-        <input name='search' type="text" onChange={(e) => setSearchKey(e.target.value)} />
-        <button name="search" type="submit" className="btn btn-success">
-          Search
-        </button>
-      </form>
-      {offset > 0 && (
-        <button
-          name="prev"
-          className="btn btn-warning"
-          onClick={searchArtists}
-        >
-          Previous
-        </button>
-      )}
-      {artists.length && (
-        <button
-          name="next"
-          className="btn btn-success"
-          onClick={searchArtists}
-        >
-          Next
-        </button>
-      )}
-      <div className="d-flex flex-wrap">{renderArtists()}</div>
-      {offset > 0 && (
-        <button
-          name="prev"
-          className="btn btn-warning"
-          onClick={searchArtists}
-        >
-          Previous
-        </button>
-      )}
-      {artists.length && (
-        <button
-          name="next"
-          className="btn btn-success"
-          onClick={searchArtists}
-        >
-          Next
-        </button>
-      )}
+      <main className={classes.body}>
+        <h1>Search for Artists on Spotify</h1>
+        <form name="search" onSubmit={searchArtists}>
+          <input
+            className={classes.searchBar}
+            name="search"
+            type="text"
+            onChange={(e) => setSearchKey(e.target.value)}
+            placeholder="Search for artists..."
+          />
+          <button name="search" type="submit" className={classes.searchBtn}>
+            Search
+          </button>
+        </form>
+        {scrollBtn("prev")}
+        {scrollBtn("next")}
+        <ul className={classes.artistList}>{renderArtists()}</ul>
+        {scrollBtn("prev")}
+        {scrollBtn("next")}
+      </main>
       <Footer />
-    </>
+    </div>
   );
 };
 

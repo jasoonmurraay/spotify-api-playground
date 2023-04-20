@@ -2,10 +2,10 @@ import classes from "../styles/Footer.module.css";
 
 const Footer = () => {
   return (
-    <div className={`${classes.footerBody}`}>
+    <footer className={`${classes.footerBody}`}>
       <p>Spotify App</p>
       <p>&copy; Jason Murray 2023</p>
-    </div>
+    </footer>
   );
 };
 

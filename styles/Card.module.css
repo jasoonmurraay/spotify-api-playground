@@ -1,5 +1,33 @@
 .wholeCard {
-    background-color: black;
-    border: 1px solid white;
-    color: white;
+  background-color: black;
+  border: 1px solid white;
+  color: white;
+  width: 12rem;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  margin: 1rem;
+  border-radius: 10px;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.link {
+  text-decoration: none;
+}
+
+.wholeCard:hover {
+  transform: translateY(-5px);
+  border: 1px solid #1db954;
+}
+
+.cardHeader {
+  text-align: center;
+}
+
+.cardImage {
+  width: 100%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  height: 12rem;
 }
