@@ -1,4 +1,4 @@
-import classes from './ButtonComponent.module.css'
+import classes from '../styles/ButtonComponent.module.css'
 
 const ButtonComponent = (props) => {
     const onClickHandler = (e) => {

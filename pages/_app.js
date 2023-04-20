@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useState, createContext } from "react";
 import { SpotifyProvider } from "@/context/spotifyContext";
+import '../styles/globalStyles.css'
 
 export default function App({ Component, pageProps }) {
   return (
