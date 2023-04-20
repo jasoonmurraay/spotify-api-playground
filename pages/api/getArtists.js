@@ -1,8 +1,13 @@
 import axios from "axios";
 import getAccessToken from "./getAccessToken";
 
-const getArtists = async (url, searchKey, providedToken, providedExpiryTime) => {
-  let token;
+const getArtists = async (
+  url,
+  searchKey,
+  providedToken,
+  providedExpiryTime
+) => {
+  let token, expires_in;
   if (providedExpiryTime > Date.now()) {
     token = providedToken;
   } else {
@@ -15,12 +20,15 @@ const getArtists = async (url, searchKey, providedToken, providedExpiryTime) => 
         Authorization: `Bearer ${token}`,
       },
       params: {
-        q: searchKey.length ? searchKey : '',
+        q: searchKey.length ? searchKey : "",
         type: "artist",
       },
     });
     console.log("Artists data: ", data);
-    return data;
+    return {
+      token,
+      data,
+    };
   } catch (e) {
     return { error: e };
   }

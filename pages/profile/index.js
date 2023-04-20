@@ -1,19 +1,19 @@
-import classes from '../../styles/ProfilePage.module.css'
+import classes from "../../styles/ProfilePage.module.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { useContext, useState, useEffect } from 'react';
-import { SpotifyContext } from '@/context/spotifyContext';
-import getProfile from '../api/getProfile';
-import Link from 'next/link';
-import Loading from '@/components/Loading';
+import { useContext, useState, useEffect } from "react";
+import { SpotifyContext } from "@/context/spotifyContext";
+import getProfile from "../api/getProfile";
+import Link from "next/link";
+import Loading from "@/components/Loading";
 
 const profile = () => {
   const { spotifyTokenState, updateSpotifyToken, updateId } =
     useContext(SpotifyContext);
   console.log("Context: ", spotifyTokenState);
-  const [isLoading, setIsLoading] = useState(false)
-  const [data, setData] = useState()
-  
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState();
+
   useEffect(() => {
     setIsLoading(true);
     async function fetchData() {
@@ -24,7 +24,7 @@ const profile = () => {
     }
     fetchData().then((data) => {
       console.log("Profile Items: ", data);
-      setData(data.data)
+      setData(data.data);
       console.log("Data ", data.data);
       if (data.id !== spotifyTokenState.id) {
         console.log("Updating user Id context!");
@@ -39,12 +39,12 @@ const profile = () => {
           "Old Token: ",
           spotifyTokenState.token
         );
-        updateSpotifyToken(data.token, data.expires_in);
+        updateSpotifyToken(data.token, 3600);
       }
     });
-    setIsLoading(false)
+    setIsLoading(false);
   }, []);
-  console.log("Data: ", data)
+  console.log("Data: ", data);
   return (
     <>
       <Navbar />
@@ -65,7 +65,8 @@ const profile = () => {
                 />
               )}
               <p>
-                {data.followers.total} {data.followers.total === 1 ? "follower" : "followers"}
+                {data.followers.total}{" "}
+                {data.followers.total === 1 ? "follower" : "followers"}
               </p>
               <p>{data.country}</p>
             </div>
@@ -93,7 +94,9 @@ const profile = () => {
             </div>
           </div>
         </>
-      ) : <Loading />}
+      ) : (
+        <Loading />
+      )}
       <Footer />
     </>
   );
