@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useEffect, useState, useContext, useCallback, useRef } from "react";
 import { SpotifyContext } from "@/context/spotifyContext";
-import classes from "./Navbar.module.css";
+import classes from "../styles/Navbar.module.css";
 
 const Navbar = (props) => {
   const { spotifyTokenState, updateSpotifyToken, updateId } =
