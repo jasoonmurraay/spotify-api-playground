@@ -5,7 +5,8 @@ const getArtists = async (
   url,
   searchKey,
   providedToken,
-  providedExpiryTime
+  providedExpiryTime,
+  queryOffset
 ) => {
   let token, expires_in;
   if (providedExpiryTime > Date.now()) {
@@ -21,6 +22,7 @@ const getArtists = async (
       },
       params: {
         q: searchKey.length ? searchKey : "",
+        offset: queryOffset ? queryOffset : null,
         type: "artist",
       },
     });
