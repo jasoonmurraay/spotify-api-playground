@@ -1,4 +1,5 @@
 import { useState, useContext, useCallback, useEffect } from "react";
+import { useRouter } from "next/router";
 import { SpotifyContext } from "@/context/spotifyContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -6,29 +7,48 @@ import getArtists from "../api/getArtists";
 import classes from "../../styles/ArtistSearch.module.css";
 import Card from "@/components/Card";
 
-const artists = () => {
+const Artists = () => {
   const { spotifyTokenState, updateSpotifyToken } = useContext(SpotifyContext);
   const [searchKey, setSearchKey] = useState("");
   const [error, setError] = useState(false);
   const [data, setData] = useState(null);
+  const router = useRouter();
+  const mainUrl = "https://api.spotify.com/v1/search";
+
+  useEffect(() => {
+    if (router.query.searchKey) {
+      const getInitArtists = async () => {
+        const fetchData = await getArtists(
+          mainUrl,
+          router.query.searchKey,
+          spotifyTokenState.token,
+          spotifyTokenState.expirationTime,
+          router.query.offset
+        );
+        setData(fetchData.data.artists);
+        setSearchKey(router.query.searchKey);
+      };
+      getInitArtists();
+    }
+  }, [router.query]);
 
   const searchArtists = async (event) => {
     event.preventDefault();
     let value = event.target.name;
     let url, searchText;
     if (value === "search") {
-      url = "https://api.spotify.com/v1/search";
       searchText = searchKey;
+      url = mainUrl;
     } else {
       value === "next" ? (url = data.next) : (url = data.previous);
       searchText = "";
     }
-    console.log("URL: ", url);
     const fetchData = await getArtists(
       url,
       searchText,
       spotifyTokenState.token,
-      spotifyTokenState.expirationTime
+      spotifyTokenState.expirationTime,
+      null
     );
     console.log("Return: ", fetchData);
     if (fetchData.error) {
@@ -37,6 +57,9 @@ const artists = () => {
     } else {
       console.log("fetchData: ", fetchData);
       setData(fetchData.data.artists);
+      router.query.searchKey = searchKey;
+      router.query.offset = fetchData.data.artists.offset;
+      router.push(router);
       if (fetchData.token !== spotifyTokenState.token) {
         updateSpotifyToken(fetchData.token, 3600);
       }
@@ -90,15 +113,18 @@ const artists = () => {
             Search
           </button>
         </form>
-        {scrollBtn("prev")}
-        {scrollBtn("next")}
+        <div className={classes.btnDiv}>
+          {scrollBtn("prev")}
+          {scrollBtn("next")}
+        </div>
         <ul className={classes.artistList}>{renderArtists()}</ul>
-        {scrollBtn("prev")}
-        {scrollBtn("next")}
+        <div className={classes.btnDiv}>
+          {scrollBtn("prev")}
+          {scrollBtn("next")}
+        </div>
       </main>
       <Footer />
     </div>
   );
 };
-
-export default artists;
+export default Artists;
