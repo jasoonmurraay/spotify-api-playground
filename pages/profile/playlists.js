@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import classes from "../../styles/UserPlaylists.module.css";
 import Loading from "@/components/Loading";
+import copyPlaylist from "../api/copyPlaylist";
 
 const playlists = () => {
   const { spotifyTokenState } = useContext(SpotifyContext);
@@ -45,7 +46,7 @@ const playlists = () => {
     modify(playlistId).then((data) => {
       console.log("Playlist modified: ", data);
     });
-    // router.reload()
+    router.reload();
   };
 
   const copySubmitHandler = async (event) => {
@@ -69,6 +70,7 @@ const playlists = () => {
     setCopyType(null);
     setExistingPlaylist(null);
     setNewPlaylist(null);
+    router.reload();
   };
   const cancelCopyHandler = (event) => {
     event.preventDefault();
