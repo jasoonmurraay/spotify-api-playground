@@ -1,12 +1,15 @@
 import { useEffect, useState, useContext } from "react";
+import { useRouter } from "next/router";
 import Link from "next/link";
+import Head from "next/head";
 import getProfileDataType from "../api/getProfileDataType";
 import { SpotifyContext } from "@/context/spotifyContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import classes from '../../styles/UserArtists.module.css'
+import classes from "../../styles/UserArtists.module.css";
 
 const artists = () => {
+  const router = useRouter();
   const { spotifyTokenState, updateSpotifyToken } = useContext(SpotifyContext);
   const [artists, setArtists] = useState([]);
   useEffect(() => {
@@ -29,46 +32,58 @@ const artists = () => {
   const renderArtists = () => {
     return artists.map((artist) => {
       return (
-        <li key={artist.id}>
+        <li
+          key={artist.id}
+          onClick={() => redirectHandler(`artists/${artist.id}`)}
+        >
           <div
             className={`${classes.card} card col-xl-3 col-md-4 col-12 d-flex align-items-center justify-content-center`}
           >
-            <Link className={`${classes.link}`} href={`/artists/${artist.id}`}>
-              {artist.images.length ? (
-                <img
-                  className={`${classes.img} card-img`}
-                  src={artist.images[0].url}
-                  alt={`Image of ${artist.name}`}
-                />
-              ) : (
-                <></>
-              )}
+            {artist.images.length ? (
+              <img
+                className={`${classes.img} card-img`}
+                src={artist.images[0].url}
+                alt={`Image of ${artist.name}`}
+              />
+            ) : (
+              <></>
+            )}
 
-              <h2 className={`${classes.artistName} card-title`}>
-                {artist.name}
-              </h2>
-            </Link>
+            <h2 className={`${classes.artistName} card-title`}>
+              {artist.name}
+            </h2>
           </div>
         </li>
       );
     });
   };
+
+  const profileBtn = (
+    <button
+      onClick={() => redirectHandler("profile")}
+      className={`${classes.profileButton}`}
+    >
+      Back to profile
+    </button>
+  );
+
+  const redirectHandler = (path) => {
+    router.push(`/${path}`);
+  };
   return (
     <>
+      <Head>
+        <title>Top Artists</title>
+        <meta name="description" content="Your Top Artists" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <Navbar />
       <div className={`${classes.content}`}>
-        <Link href={"/profile"}>
-          <button className={`${classes.profileButton}`}>
-            Back to profile
-          </button>
-        </Link>
         <h1>Top Artists</h1>
+        {profileBtn}
         <ul className={`${classes.list}`}>{renderArtists()}</ul>
-        <Link href={"/profile"}>
-          <button className={`${classes.profileButton}`}>
-            Back to profile
-          </button>
-        </Link>
+        {profileBtn}
       </div>
       <Footer />
     </>

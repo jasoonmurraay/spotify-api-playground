@@ -6,11 +6,12 @@ import { SpotifyContext } from "@/context/spotifyContext";
 import getProfile from "../api/getProfile";
 import Link from "next/link";
 import Loading from "@/components/Loading";
+import Head from "next/head";
 
 const profile = () => {
   const { spotifyTokenState, updateSpotifyToken, updateId } =
     useContext(SpotifyContext);
-  console.log("Context: ", spotifyTokenState);
+
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState();
 
@@ -23,30 +24,27 @@ const profile = () => {
       );
     }
     fetchData().then((data) => {
-      console.log("Profile Items: ", data);
       setData(data.data);
-      console.log("Data ", data.data);
+
       if (data.id !== spotifyTokenState.id) {
         console.log("Updating user Id context!");
         updateId(data.data.id);
       }
       if (data.token !== spotifyTokenState.token) {
-        console.log(
-          "not equal: ",
-          "New Token: ",
-          data.token,
-          "\n",
-          "Old Token: ",
-          spotifyTokenState.token
-        );
         updateSpotifyToken(data.token, 3600);
       }
     });
     setIsLoading(false);
   }, []);
-  console.log("Data: ", data);
+
   return (
     <>
+      <Head>
+        <title>Profile</title>
+        <meta name="description" content="Spotify Profile" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <Navbar />
       {!isLoading && data ? (
         <>
