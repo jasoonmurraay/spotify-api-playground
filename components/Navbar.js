@@ -36,11 +36,9 @@ const Navbar = (props) => {
   }, [handleResize]);
 
   return (
-    <nav
-      className={`${classes.navBody} navbar navbar-expand-lg navbar-light bg-light`}
-    >
-      <div className={`${classes.container} container-fluid`}>
-        <a className={`${classes.brand} navbar-brand`} href="/">
+    <nav className={classes.navBody}>
+      <div className={classes.container}>
+        <a className={classes.brand} href="/">
           Spotify App
         </a>
         {loggedIn && (
@@ -58,22 +56,14 @@ const Navbar = (props) => {
             )}
             {(showLinks || !showBurger) && (
               <>
-                <ul
-                  className={`${classes.linkUl} navbar-nav me-auto mb-2 mb-lg-0`}
-                >
-                  <li className={`${classes.linkLi} nav-item`}>
-                    <Link
-                      className={`${classes.link} nav-link`}
-                      href="/profile"
-                    >
+                <ul className={`${classes.linkUl}`}>
+                  <li className={`${classes.linkLi} `}>
+                    <Link className={`${classes.link} `} href="/profile">
                       Profile
                     </Link>
                   </li>
                   <li className={`${classes.linkLi}`}>
-                    <Link
-                      className={`${classes.link} nav-link`}
-                      href="/artists"
-                    >
+                    <Link className={`${classes.link}`} href="/artists">
                       Search Artists
                     </Link>
                   </li>

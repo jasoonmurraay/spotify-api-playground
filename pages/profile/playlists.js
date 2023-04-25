@@ -1,4 +1,6 @@
 import { useRouter } from "next/router";
+import "bootstrap/dist/css/bootstrap.css";
+import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState, useContext, useRef } from "react";
 import { SpotifyContext } from "@/context/spotifyContext";
@@ -9,12 +11,12 @@ import Footer from "@/components/Footer";
 import classes from "../../styles/UserPlaylists.module.css";
 import Loading from "@/components/Loading";
 import copyPlaylist from "../api/copyPlaylist";
+import Card from "@/components/Card";
 
 const playlists = () => {
   const { spotifyTokenState } = useContext(SpotifyContext);
   const router = useRouter();
   const id = spotifyTokenState.id;
-  console.log("playlist id: ", id);
   const newNameRef = useRef();
   const [fillForm, setFillForm] = useState(false);
   const [copyType, setCopyType] = useState(null);
@@ -96,66 +98,116 @@ const playlists = () => {
       }
     });
   };
-  const renderPlaylists = () => {
+  // const redirectHandler = (path) => {
+  //   router.push(path);
+  // };
+  const handleCardClick = (id) => {
+    setNewPlaylist(id);
+  };
+  console.log("Existing Playlist: ", existingPlaylist);
+  console.log("New Playlist: ", newPlaylist);
+  const renderPlaylists = (type) => {
     return playlists.map((playlist) => {
-      return (
-        <li
-          className={`${classes.card} card col-xl-3 col-md-4 col-12 d-flex align-items-center justify-content-center`}
-          key={playlist.id}
-        >
-          <div className={`${classes.playlistItem}`}>
-            <Link
-              className={`${classes.name}`}
-              href={`/playlists/${playlist.id}`}
-            >
-              <div className={`${classes.cardBody}`}>
-                {playlist.images.length && (
-                  <img
-                    className={`${classes.img} card-img`}
-                    src={playlist.images[0].url}
-                    alt=""
+      if (type === "all") {
+        return (
+          <>
+            <li className={classes.card} key={playlist.id}>
+              {type === "all" && (
+                <Link
+                  className={`${classes.name}`}
+                  href={`/playlists/${playlist.id}`}
+                >
+                  <Card
+                    link={`/playlists/${playlist.id}`}
+                    img={playlist.images.length ? playlist.images[0].url : null}
+                    header={
+                      playlist.name.length > 20
+                        ? `${playlist.name.substring(0, 20)}...`
+                        : playlist.name
+                    }
                   />
-                )}
-
-                <h2 className={` card-title`}>{playlist.name}</h2>
-
-                {playlist.owner.id !== spotifyTokenState.id && (
-                  <p className={`${classes.creator}`}>
-                    {playlist.owner.display_name}
-                  </p>
-                )}
-              </div>
-            </Link>
-
-            {playlist.owner.id === spotifyTokenState.id && (
-              <button
-                className={`${classes.reorderButton}`}
-                id={playlist.id}
-                onClick={modifyPlaylistHandler}
-                value={playlist.id}
-              >{`Re-order ${playlist.name}`}</button>
-            )}
-            <button
-              className={`${classes.copyButton}`}
-              onClick={() => {
-                setFillForm(true);
-                setExistingPlaylist(playlist.id);
-                console.log("Existing playlist set: ", existingPlaylist);
-              }}
-              value={playlist.id}
-            >{`Copy ${
-              playlist.name.length > 20
-                ? `${playlist.name.substring(0, 20)}...`
-                : playlist.name
-            }'s Items to Another Playlist`}</button>
-          </div>
-        </li>
-      );
+                </Link>
+              )}
+              {type === "all" && playlist.owner.id === spotifyTokenState.id && (
+                <>
+                  <button
+                    className={`${classes.reorderButton}`}
+                    id={playlist.id}
+                    onClick={modifyPlaylistHandler}
+                    value={playlist.id}
+                  >{`Re-order ${playlist.name}`}</button>
+                </>
+              )}
+              {type === "all" && (
+                <button
+                  className={`${classes.copyButton}`}
+                  onClick={() => {
+                    setFillForm(true);
+                    setExistingPlaylist(playlist.id);
+                    console.log("Existing playlist set: ", existingPlaylist);
+                  }}
+                  value={playlist.id}
+                >{`Copy ${
+                  playlist.name.length > 20
+                    ? `${playlist.name.substring(0, 20)}...`
+                    : playlist.name
+                }'s Items to Another Playlist`}</button>
+              )}
+            </li>
+          </>
+        );
+      } else if (type === "user") {
+        if (playlist.owner.id === spotifyTokenState.id && !newPlaylist) {
+          return (
+            <li
+              className={`${classes.card} ${
+                newPlaylist === playlist.id ? classes.selected : null
+              }`}
+              key={playlist.id}
+            >
+              <Card
+                link={`/playlists/${playlist.id}`}
+                img={playlist.images.length ? playlist.images[0].url : null}
+                header={
+                  playlist.name.length > 20
+                    ? `${playlist.name.substring(0, 20)}...`
+                    : playlist.name
+                }
+                onClickWhole={() => {
+                  handleCardClick(playlist.id);
+                }}
+              />
+            </li>
+          );
+        } else if (newPlaylist) {
+          if (playlist.id === newPlaylist) {
+            return (
+              <li className={classes.card}>
+                <Card
+                  link={`/playlists/${playlist.id}`}
+                  img={playlist.images.length ? playlist.images[0].url : null}
+                  header={
+                    playlist.name.length > 20
+                      ? `${playlist.name.substring(0, 20)}...`
+                      : playlist.name
+                  }
+                />
+              </li>
+            );
+          }
+        }
+      }
     });
   };
 
   return (
     <>
+      <Head>
+        <title>Playlists</title>
+        <meta name="description" content="Your Playlists" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       {isLoading && <Loading />}
       {!isLoading && (
         <>
@@ -165,29 +217,35 @@ const playlists = () => {
               className={`${classes.copyForm}`}
               onSubmit={copySubmitHandler}
             >
-              <fieldset>
-                <input
-                  onClick={() => {
-                    setCopyType("new");
-                  }}
-                  type="radio"
-                  value="new"
-                  id="newPlaylist"
-                  name="copyType"
-                />
-                <label htmlFor="newPlaylist">Create New Playlist</label>
-                <input
-                  onClick={() => {
-                    setCopyType("existing");
-                  }}
-                  type="radio"
-                  value="existing"
-                  id="existingPlaylist"
-                  name="copyType"
-                />
-                <label htmlFor="existingPlaylist">
-                  Add to Existing Playlist
-                </label>
+              <fieldset className={classes.copyFieldset}>
+                <div class={`form-check ${classes.radio}`}>
+                  <input
+                    onClick={() => {
+                      setCopyType("new");
+                    }}
+                    className="form-check-input"
+                    type="radio"
+                    name="flexRadioDefault"
+                    id="flexRadioDefault1"
+                  />
+                  <label className="form-check-label" for="flexRadioDefault1">
+                    Create New Playlist
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    onClick={() => {
+                      setCopyType("existing");
+                    }}
+                    class="form-check-input"
+                    type="radio"
+                    name="flexRadioDefault"
+                    id="flexRadioDefault2"
+                  />
+                  <label class="form-check-label" for="flexRadioDefault2">
+                    Use Existing Playlist
+                  </label>
+                </div>
               </fieldset>
               {copyType === "new" && (
                 <>
@@ -197,26 +255,37 @@ const playlists = () => {
               )}
               {copyType === "existing" && (
                 <>
-                  <div>{renderPlaylistNames()}</div>
+                  <ul className={`${classes.list}`}>
+                    {renderPlaylists("user")}
+                  </ul>
                 </>
               )}
-              {copyType && (
-                <>
-                  <button onClick={cancelCopyHandler}>Cancel</button>
-                  <button
-                    value={[existingPlaylist, newPlaylist]}
-                    onClick={copySubmitHandler}
-                  >
-                    Submit
-                  </button>
-                </>
-              )}
+              <div className={classes.copyBtnsDiv}>
+                <button
+                  className={classes.cancelBtn}
+                  onClick={cancelCopyHandler}
+                >
+                  Cancel
+                </button>
+                {copyType === "new" ||
+                  (copyType === "existing" && newPlaylist && (
+                    <button
+                      className={classes.copySubmitBtn}
+                      value={[existingPlaylist, newPlaylist]}
+                      onClick={copySubmitHandler}
+                    >
+                      Submit
+                    </button>
+                  ))}
+              </div>
             </form>
           )}
-          <div className={`${classes.content}`}>
-            <h1>User Playlists</h1>
-            <ul className={`${classes.list}`}>{renderPlaylists()}</ul>
-          </div>
+          {!fillForm && (
+            <div className={`${classes.content}`}>
+              <h1>User Playlists</h1>
+              <ul className={`${classes.list}`}>{renderPlaylists("all")}</ul>
+            </div>
+          )}
           <Footer />
         </>
       )}
