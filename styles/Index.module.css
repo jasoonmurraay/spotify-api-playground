@@ -1,0 +1,25 @@
+.mainBody {
+  background-color: black;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logoutBtn,
+.searchArtistBtn {
+  background-color: #1db954;
+  color: white;
+  border-radius: 10px;
+  padding: 1rem 2rem;
+  margin: 3rem 0;
+  border: 1px solid #1db954;
+}
+
+.logoutBtn:hover,
+.searchArtistBtn:hover {
+  transform: translateY(-0.25rem);
+  border-color: white;
+  box-shadow: 0 5px 10px #1db954;
+  cursor: pointer;
+}

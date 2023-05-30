@@ -7,13 +7,11 @@ import login from "./api/login";
 import getAccessToken from "./api/getAccessToken";
 import AppContext from "@/context/spotifyContext";
 import Footer from "@/components/Footer";
+import classes from "../styles/Index.module.css";
 
 export default function Home() {
   const [token, setToken] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
-  // const loginHandler = () => {
-  //     login()
-  // }
 
   useEffect(() => {
     async function getToken() {
@@ -47,26 +45,28 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Navbar isLoggedIn={loggedIn}></Navbar>
-      <h1>Spotify React</h1>
-      {!token ? (
-        <button className="btn btn-primary">
-          <a
-            href={`${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}`}
-          >
-            Login to Spotify
-          </a>
-        </button>
-      ) : (
-        <button className="btn btn-warning" onClick={logoutHandler}>
-          Logout
-        </button>
-      )}{" "}
-      {token && (
-        <button className="btn btn-success">
-          <Link href="/artists">Search Artists</Link>
-        </button>
-      )}
+      <Navbar isLoggedIn={loggedIn} />
+      <main className={classes.mainBody}>
+        <h1>Spotify React</h1>
+        {!token ? (
+          <button className="btn btn-primary">
+            <a
+              href={`${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}`}
+            >
+              Login to Spotify
+            </a>
+          </button>
+        ) : (
+          <button className={classes.logoutBtn} onClick={logoutHandler}>
+            Logout
+          </button>
+        )}{" "}
+        {token && (
+          <Link className={classes.searchArtistBtn} href="/artists">
+            Search Artists
+          </Link>
+        )}
+      </main>
       <Footer />
     </>
   );

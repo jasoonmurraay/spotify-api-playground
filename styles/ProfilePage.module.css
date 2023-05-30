@@ -1,49 +1,51 @@
 .content {
-    background-color: black;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: auto;
+  background-color: black;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: auto;
 }
 
 .img {
-    width: 15rem;
-    height: 15rem;
-    border-radius: 20px;
+  width: 15rem;
+  height: 15rem;
+  border-radius: 20px;
 }
 
 .card {
-    width: 15rem;
-    height: 18rem;
-    margin-bottom: 3rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  width: 15rem;
+  height: 18rem;
+  margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .buttons {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 1rem 0;
-    margin-top: 5rem;
-    align-items: center;
-    justify-content: center;
-    max-width: 60%;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 1rem 0;
+  margin-top: 5rem;
+  align-items: center;
+  justify-content: center;
+  max-width: 75%;
 }
 
 .buttonLink {
-    background-color: #1DB954;
-    color: white;
-    margin: 1rem;
-    border: 1px solid white;
-    border-radius: 10px;
+  background-color: #1db954;
+  color: white;
+  margin: 1rem;
+  border: 1px solid white;
+  border-radius: 10px;
+  width: 7rem;
+  padding: 1rem 0;
 }
 
 .buttonLink:hover {
-    border-color: #1DB954;
-    transform: translateY(-5px);
-    box-shadow: 0 5px 10px #1DB954;
-    cursor: pointer;
+  border-color: #1db954;
+  transform: translateY(-5px);
+  box-shadow: 0 5px 10px #1db954;
+  cursor: pointer;
 }
